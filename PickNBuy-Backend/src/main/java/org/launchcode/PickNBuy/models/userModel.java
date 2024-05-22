@@ -14,12 +14,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class userModel {
-
-
-    @Id
-    @GeneratedValue
-    private int id;
+public class userModel extends AbstractEntity{
 
     @NotNull
     private String name;
@@ -57,22 +52,7 @@ public class userModel {
         return encoder.matches(password, password);
     }
 
-    public  int getId() {
-        return id;
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        userModel entity = (userModel) o;
-        return id == entity.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
     public String getName() {
         return name;
     }
