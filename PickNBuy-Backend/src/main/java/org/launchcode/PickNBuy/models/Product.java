@@ -1,13 +1,13 @@
 package org.launchcode.PickNBuy.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.data.annotation.CreatedDate;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,8 +30,10 @@ public class Product extends AbstractEntity{
     @Size(min=20, message="Product stock cannot exceed 20 characters")
     private int stock;
     private int numOfReviews=0;
-    @CreatedDate
-    private String createdAt;
+  //  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt;
 
     @OneToMany
     @JoinColumn(name="review_id")
@@ -40,7 +42,7 @@ public class Product extends AbstractEntity{
     public Product() {
     }
 
-    public Product(String productname, double price, String description, String ratings, List<ProductImages> productImages, Category category, String seller, int stock, int numOfReviews, String createdAt, List<Reviews> reviews) {
+    public Product(String productname, double price, String description, String ratings, List<ProductImages> productImages, Category category, String seller, int stock, int numOfReviews, LocalDateTime createdAt, List<Reviews> reviews) {
         this.productname = productname;
         this.price = price;
         this.description = description;
@@ -53,7 +55,10 @@ public class Product extends AbstractEntity{
         this.createdAt = createdAt;
         this.reviews = reviews;
     }
-
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
     public String getProductname() {
         return productname;
     }
@@ -126,11 +131,11 @@ public class Product extends AbstractEntity{
         this.numOfReviews = numOfReviews;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

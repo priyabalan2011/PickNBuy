@@ -1,15 +1,14 @@
 package org.launchcode.PickNBuy.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.data.annotation.CreatedDate;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -37,8 +36,9 @@ public class userModel extends AbstractEntity{
     private Date resetPasswordTokenExpire;
 
     //@Column(name="createdAt",columnDefinition = "DATE DEFAULT CURRENT_DATE")
-    @CreatedDate
-    private Date createdAt;
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt;
 
     public userModel() {
     }
@@ -52,7 +52,10 @@ public class userModel extends AbstractEntity{
         return encoder.matches(password, password);
     }
 
-
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
     public String getName() {
         return name;
     }
@@ -93,11 +96,11 @@ public class userModel extends AbstractEntity{
         this.role = role;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
