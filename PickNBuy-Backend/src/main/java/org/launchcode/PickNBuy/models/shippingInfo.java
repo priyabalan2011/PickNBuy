@@ -1,10 +1,12 @@
 package org.launchcode.PickNBuy.models;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
+@Entity
 public class shippingInfo extends AbstractEntity  {
 
     @NotNull
@@ -26,7 +28,7 @@ public class shippingInfo extends AbstractEntity  {
     @OneToOne
     @NotNull
     @JoinColumn(name="order_id")
-    private Order order;
+    private Orders order;
 
     public shippingInfo(String address, String country, String city, String phoneNo, String postalCode, userModel user) {
         this.address = address;

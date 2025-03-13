@@ -39,6 +39,10 @@ public class Product extends AbstractEntity{
     @JoinColumn(name="review_id")
     private List<Reviews> reviews=new ArrayList<>();
 
+    @OneToMany
+    @JoinColumn(name="orderItems_id")
+    private List<orderItems> orderitems=new ArrayList<>();
+
     public Product() {
     }
 

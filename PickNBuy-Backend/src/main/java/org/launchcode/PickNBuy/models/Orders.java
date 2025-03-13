@@ -6,10 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-public class Order extends AbstractEntity{
-
-
+@Entity
+public class Orders extends AbstractEntity{
 
     @ManyToOne
     @NotNull
@@ -25,14 +23,15 @@ public class Order extends AbstractEntity{
     @NotNull
     @JoinColumn(name="orderItems_id")
     private List<orderItems> orderitems = new ArrayList<>();
+
     @NotNull
-    private double itemsPrice=0.0;
+    private double itemsPrice;
     @NotNull
-    private double taxPrice=0.0;
+    private double taxPrice;
     @NotNull
-    private double shippingPrice=0.0;
+    private double shippingPrice;
     @NotNull
-    private double totalPrice=0.0;
+    private double totalPrice;
     @NotNull
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -40,7 +39,7 @@ public class Order extends AbstractEntity{
     @NotNull
     private String orderStatus="Processing";
 
-    public Order(userModel user, shippingInfo shippinginfo, List<orderItems> orderitems, double itemsPrice, double taxPrice, double shippingPrice, double totalPrice, LocalDateTime createdAt, String orderStatus) {
+    public Orders(userModel user, shippingInfo shippinginfo, List<orderItems> orderitems, double itemsPrice, double taxPrice, double shippingPrice, double totalPrice, LocalDateTime createdAt, String orderStatus) {
         this.user = user;
         this.shippinginfo = shippinginfo;
         this.orderitems = orderitems;

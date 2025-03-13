@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 public class userModel extends AbstractEntity{
@@ -39,6 +39,11 @@ public class userModel extends AbstractEntity{
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
+
+    @OneToMany
+    @JoinColumn(name="order_id")
+    private List<Orders> order=new ArrayList<>();
+
 
     public userModel() {
     }
