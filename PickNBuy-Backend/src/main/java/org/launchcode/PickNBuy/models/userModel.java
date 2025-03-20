@@ -33,7 +33,7 @@ public class userModel extends AbstractEntity{
 
     private String resetPasswordToken;
 
-    private Date resetPasswordTokenExpire;
+    private LocalDateTime resetPasswordTokenExpire;
 
     //@Column(name="createdAt",columnDefinition = "DATE DEFAULT CURRENT_DATE")
     @Column(nullable = false, updatable = false)
@@ -91,6 +91,22 @@ public class userModel extends AbstractEntity{
 
     public void setAvator(String avator) {
         this.avator = avator;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public LocalDateTime getResetPasswordTokenExpire() {
+        return resetPasswordTokenExpire;
+    }
+
+    public void setResetPasswordTokenExpire(LocalDateTime resetPasswordTokenExpire) {
+        this.resetPasswordTokenExpire = resetPasswordTokenExpire;
     }
 
     public String getRole() {

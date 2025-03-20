@@ -19,6 +19,7 @@ import java.util.Optional;
 //@Controller("/")
 //@ResponseBody
 @RestController
+@RequestMapping("/user")
 @CrossOrigin(origins ="*")
 public class userController {
 
