@@ -1,9 +1,12 @@
 package org.launchcode.PickNBuy.controllers;
 
+
+import org.launchcode.PickNBuy.data.ProductImagesRespository;
 import org.launchcode.PickNBuy.data.ProductRepository;
 import org.launchcode.PickNBuy.data.ProductService;
 import org.launchcode.PickNBuy.exception.ProductNotFoundException;
 import org.launchcode.PickNBuy.models.Product;
+import org.launchcode.PickNBuy.models.ProductImages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +21,8 @@ public class productController {
     private ProductRepository productrepository;
     @Autowired
     private ProductService productService;
-
+    @Autowired
+    private ProductImagesRespository productImagesRespository;
 
     @GetMapping("/")
     List<Product> getAllProducts()
@@ -27,13 +31,15 @@ public class productController {
     }
 
     @PostMapping("/newproducts")
-    public Product addproducts(@RequestBody Product product)
+    public Product addProducts(@RequestBody Product product)
     {
         return productrepository.save(product);
     }
+
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable int id)
     {
+
         return productrepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
@@ -90,6 +96,13 @@ public class productController {
             return productService.searchByPriceRange(minPrice, maxPrice);
         }
         return List.of(); // Return empty list if no filters are provided
+    }
+
+    @PostMapping("/addimages")
+    public ProductImages addProductImages(@RequestBody ProductImages productImages)
+    {
+        return productImagesRespository.save(productImages);
+
     }
 
 }

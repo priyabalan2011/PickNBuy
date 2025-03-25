@@ -25,9 +25,10 @@ public class shippingInfo extends AbstractEntity  {
     @JoinColumn(name="user_id")
     private userModel user;
 
-    @OneToOne
+    //@OneToOne
     @NotNull
-    @JoinColumn(name="order_id")
+   // @JoinColumn(name="order_id")
+    @OneToOne(mappedBy = "shippinginfo")
     private Orders order;
 
     public shippingInfo(String address, String country, String city, String phoneNo, String postalCode, userModel user) {

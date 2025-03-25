@@ -1,5 +1,7 @@
 package org.launchcode.PickNBuy.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -31,6 +33,8 @@ public class orderItems extends AbstractEntity{
     @NotNull
     @ManyToOne
     @JoinColumn(name="product_id")
+    @JsonIgnore
+    @JsonBackReference
     private  Product product;
 
     public orderItems(Integer productQuantity, Double unitPrice, Orders order, Product product) {

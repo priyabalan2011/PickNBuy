@@ -1,5 +1,7 @@
 package org.launchcode.PickNBuy.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -16,16 +18,19 @@ public class Reviews extends AbstractEntity{
     @NotNull
     @ManyToOne
     @JoinColumn(name="product_id")
+    @JsonIgnore
+    @JsonBackReference
     private Product product;
 
     public Reviews() {
     }
 
-    public Reviews(String user, String rating, String comment) {
+    public Reviews(String user, String rating, String comment,Product product) {
 
         this.user = user;
         this.rating = rating;
         this.comment = comment;
+        this.product=product;
     }
 
     public String getUser() {

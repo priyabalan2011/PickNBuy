@@ -40,9 +40,10 @@ public class userModel extends AbstractEntity{
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
-    @OneToMany
-    @JoinColumn(name="order_id")
-    private List<Orders> order=new ArrayList<>();
+    //@OneToMany
+    //@JoinColumn(name="order_id")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Orders> orders=new ArrayList<>();
 
 
     public userModel() {

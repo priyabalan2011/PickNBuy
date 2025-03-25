@@ -14,14 +14,16 @@ public class Orders extends AbstractEntity{
     @JoinColumn(name="user_id")
     private userModel user;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shipping_id", referencedColumnName = "id")
     @NotNull
-    @JoinColumn(name="shipping_id")
+    //@JoinColumn(name="shipping_id")
     private shippingInfo shippinginfo;
 
-    @OneToMany
+   // @OneToMany
     @NotNull
-    @JoinColumn(name="orderItems_id")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JoinColumn(name="orderItems_id")
     private List<orderItems> orderitems = new ArrayList<>();
 
     @NotNull
