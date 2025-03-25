@@ -23,6 +23,7 @@ public class Product extends AbstractEntity{
     @OneToMany
     @JoinColumn(name="image_id")
     private List<ProductImages> productImages=new ArrayList<>();
+    @Enumerated(EnumType.STRING)
     private Category category;
     @NotNull
     private String  seller;

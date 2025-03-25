@@ -1,6 +1,7 @@
 package org.launchcode.PickNBuy.controllers;
 
 import org.launchcode.PickNBuy.data.ProductRepository;
+import org.launchcode.PickNBuy.data.ProductService;
 import org.launchcode.PickNBuy.exception.ProductNotFoundException;
 import org.launchcode.PickNBuy.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class productController {
 
     @Autowired
     private ProductRepository productrepository;
+    @Autowired
+    private ProductService productService;
+
 
     @GetMapping("/")
     List<Product> getAllProducts()
@@ -49,6 +53,7 @@ public class productController {
                     product1.setRatings(product.getRatings());
                     product1.setSeller(product.getSeller());
                     product1.setStock(product.getStock());
+                    return productrepository.save(product1);
                 }).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
@@ -62,6 +67,29 @@ public class productController {
         }
         productrepository.deleteById(id);
         return  "Product with id "+id+" has been deleted success.";
+    }
+
+
+
+    // Search by name
+    //GET http://localhost:8080/products/search?name=laptop
+    //GET http://localhost:8080/products/search?category=electronics
+    //GET http://localhost:8080/products/search?minPrice=500&maxPrice=1000
+    @GetMapping("/search")
+    public List<Product> searchProducts(
+            @RequestParam(required = false) String productname,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice
+    ) {
+        if (productname != null) {
+            return productService.searchByName(productname);
+        } else if (category != null) {
+            return productService.searchByCategory(category);
+        } else if (minPrice != null && maxPrice != null) {
+            return productService.searchByPriceRange(minPrice, maxPrice);
+        }
+        return List.of(); // Return empty list if no filters are provided
     }
 
 }
