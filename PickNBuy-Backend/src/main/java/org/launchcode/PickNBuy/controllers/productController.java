@@ -33,6 +33,9 @@ public class productController {
     @PostMapping("/newproducts")
     public Product addProducts(@RequestBody Product product)
     {
+        for (ProductImages image : product.getProductImages()) {
+            image.setProduct(product);
+        }
         return productrepository.save(product);
     }
 

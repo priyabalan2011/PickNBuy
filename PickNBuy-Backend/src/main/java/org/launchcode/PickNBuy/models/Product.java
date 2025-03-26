@@ -1,6 +1,9 @@
 package org.launchcode.PickNBuy.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -13,16 +16,14 @@ import java.util.List;
 @Entity
 public class Product extends AbstractEntity{
 
-
     @NotNull
-    @Size(min=100, message="Product name cannot exceed 100 characters")
+    @Size(max=200, message="Product name cannot exceed 200 characters")
     private String productname;
     private double price;
     private String description;
     private String ratings;
 
-   // @OneToMany
-   // @JoinColumn(name="image_id")
+    @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImages> productImages=new ArrayList<>();
 
@@ -31,22 +32,20 @@ public class Product extends AbstractEntity{
     @NotNull
     private String  seller;
     @NotNull
-    @Size(min=20, message="Product stock cannot exceed 20 characters")
+    @Min(value = 0, message = "Stock cannot be negative")
+    @Max(value = 9999, message = "Stock cannot exceed 9999")
     private int stock;
     private int numOfReviews;
-  //  @CreatedDate
-  @Column(nullable = false, updatable = false)
-  @Temporal(TemporalType.TIMESTAMP)
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-   // @OneToMany
-   // @JoinColumn(name="review_id")
-   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reviews> reviews=new ArrayList<>();
 
-    //@OneToMany
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JoinColumn(name="orderItems_id")
     private List<orderItems> orderitems=new ArrayList<>();
 
     public Product() {

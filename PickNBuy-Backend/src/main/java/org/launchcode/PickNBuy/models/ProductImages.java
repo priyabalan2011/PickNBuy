@@ -13,7 +13,7 @@ public class ProductImages extends AbstractEntity{
     @NotNull
     @ManyToOne
     @JoinColumn(name="product_id")
-    @JsonIgnore
+    //@JsonIgnore
     @JsonBackReference
     private Product product;
 
@@ -21,9 +21,9 @@ public class ProductImages extends AbstractEntity{
     public ProductImages() {
     }
 
-    public ProductImages(String images,Product product) {
+    public ProductImages(String images) {
         this.images = images;
-        this.product = product;
+       // this.product = product;
     }
 
     public String getImages() {
