@@ -1,16 +1,18 @@
 package org.launchcode.PickNBuy.controllers;
 
-
 import org.launchcode.PickNBuy.data.ProductImagesRespository;
 import org.launchcode.PickNBuy.data.ProductRepository;
-import org.launchcode.PickNBuy.data.ProductService;
 import org.launchcode.PickNBuy.exception.ProductNotFoundException;
+import org.launchcode.PickNBuy.models.Category;
 import org.launchcode.PickNBuy.models.Product;
 import org.launchcode.PickNBuy.models.ProductImages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -19,17 +21,21 @@ public class productController {
 
     @Autowired
     private ProductRepository productrepository;
-    @Autowired
-    private ProductService productService;
+
     @Autowired
     private ProductImagesRespository productImagesRespository;
 
+    //list all the products.
+    //GET http://localhost:8080/products/
     @GetMapping("/")
     List<Product> getAllProducts()
     {
         return productrepository.findAll();
     }
 
+    //Add new products.
+    //POST http://localhost:8080/products/newproducts
+    //within body we have to list the new products in postman.
     @PostMapping("/newproducts")
     public Product addProducts(@RequestBody Product product)
     {
@@ -39,6 +45,8 @@ public class productController {
         return productrepository.save(product);
     }
 
+    //Get the requested product based on id;
+    //GET http://localhost:8080/products/100
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable int id)
     {
@@ -47,37 +55,50 @@ public class productController {
     }
 
 
+    //update the product based on the product id.
+    //PUT http://localhost:8080/products/100
     @PutMapping("/{id}")
-    public Product updateProduct(@RequestBody Product product,@PathVariable int id)
-    {
-        return productrepository.findById(id)
-                .map(product1 ->{
-                    product1.setProductImages(product.getProductImages());
-                    product1.setCategory(product.getCategory());
-                    product1.setCreatedAt(product.getCreatedAt());
-                    product1.setDescription(product.getDescription());
-                    product1.setPrice(product.getPrice());
-                    product1.setProductname(product.getProductname());
-                    product1.setNumOfReviews(product.getNumOfReviews());
-                    product1.setRatings(product.getRatings());
-                    product1.setSeller(product.getSeller());
-                    product1.setStock(product.getStock());
-                    return productrepository.save(product1);
-                }).orElseThrow(() -> new ProductNotFoundException(id));
-    }
+    public Product updateProduct(@PathVariable int id, @RequestBody Product updatedProduct) {
+        Optional<Product> optionalProduct = productrepository.findById(id);
 
-    @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable int id)
-    {
-        if(!productrepository.existsById(id))
-        {
-            throw new ProductNotFoundException(id);
+        if (optionalProduct.isPresent()) {
+            Product existingProduct = optionalProduct.get();
 
+            // Update fields
+            existingProduct.setProductname(updatedProduct.getProductname());
+            existingProduct.setPrice(updatedProduct.getPrice());
+            existingProduct.setDescription(updatedProduct.getDescription());
+            existingProduct.setRatings(updatedProduct.getRatings());
+            existingProduct.setCategory(updatedProduct.getCategory());
+            existingProduct.setSeller(updatedProduct.getSeller());
+            existingProduct.setStock(updatedProduct.getStock());
+            existingProduct.setNumOfReviews(updatedProduct.getNumOfReviews());
+
+            // Handle product images update
+            existingProduct.getProductImages().clear();
+            for (ProductImages image : updatedProduct.getProductImages()) {
+                image.setProduct(existingProduct);
+                existingProduct.getProductImages().add(image);
+            }
+
+             productrepository.save(existingProduct);
         }
-        productrepository.deleteById(id);
-        return  "Product with id "+id+" has been deleted success.";
+        return productrepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
+    //Delete the product based on ID.
+    // DEL http://localhost:8080/products/100
+    @DeleteMapping("/{id}")
+    public String deleteProduct(@PathVariable int id) {
+        Optional<Product> optionalProduct = productrepository.findById(id);
+
+        if (optionalProduct.isPresent()) {
+            productrepository.deleteById(id);
+            return "Product deleted successfully.";
+        } else {
+            return "Product not found.";
+        }
+    }
 
 
     // Search by name
@@ -85,20 +106,28 @@ public class productController {
     //GET http://localhost:8080/products/search?category=electronics
     //GET http://localhost:8080/products/search?minPrice=500&maxPrice=1000
     @GetMapping("/search")
-    public List<Product> searchProducts(
-            @RequestParam(required = false) String productname,
+    public ResponseEntity<List<Product>> searchProducts(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice
-    ) {
-        if (productname != null) {
-            return productService.searchByName(productname);
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String seller)
+    {
+        List<Product> products;
+
+        if (name != null) {
+            products = productrepository.findByProductnameContainingIgnoreCase(name);
         } else if (category != null) {
-            return productService.searchByCategory(category);
+            products = productrepository.findByCategory(Category.valueOf(category.toUpperCase()));
+        } else if (seller != null) {
+            products = productrepository.findBySellerContainingIgnoreCase(seller);
         } else if (minPrice != null && maxPrice != null) {
-            return productService.searchByPriceRange(minPrice, maxPrice);
+           products = productrepository.findByPriceRange(minPrice, maxPrice);
+        } else {
+            products = productrepository.findAll();
         }
-        return List.of(); // Return empty list if no filters are provided
+
+        return ResponseEntity.ok(products); // Return empty list if no filters are provided
     }
 
     @PostMapping("/addimages")
@@ -107,5 +136,8 @@ public class productController {
         return productImagesRespository.save(productImages);
 
     }
+
+
+
 
 }
