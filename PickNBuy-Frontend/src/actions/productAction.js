@@ -1,12 +1,12 @@
 import axios from "axios";
-import { productsFail, productsRequest, productsSuccess } from "../slices/productsSlices";
+import { productFail, productRequest, productSuccess } from "../slices/productSlice";
 
-export const getProducts = async (dispatch) =>{
+export const getProduct = id => async (dispatch) =>{
     try {
-         dispatch(productsRequest());
+         dispatch(productRequest());
         
          // Ensure we properly await the axios request
-         const response = await axios.get("http://localhost:8080/products/");
+         const response = await axios.get(`http://localhost:8080/products/${id}`);
 
          // Ensure response.data is not undefined
          if (!response || !response.data) {
@@ -15,11 +15,11 @@ export const getProducts = async (dispatch) =>{
  
          console.log(response.data);
  
-         dispatch(productsSuccess(response.data));
+         dispatch(productSuccess(response.data));
 
         
     } catch (error) {
         //handle error.
-        dispatch(productsFail(error.response.data.message));
+        dispatch(productFail(error.response.data.message));
     }
 }

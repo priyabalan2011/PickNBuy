@@ -1,10 +1,12 @@
 import { combineReducers,configureStore } from "@reduxjs/toolkit";
 import { configure } from "@testing-library/dom";
 import { thunk } from "redux-thunk";
-import productReducer from "./slices/productsSlices";
+import productsReducer from "./slices/productsSlices";
+import productReducer from "./slices/productSlice";
 
 const reducer=combineReducers({
-    productsState : productReducer
+    productsState : productsReducer,
+    productState : productReducer
 
 })
 const store = configureStore({
