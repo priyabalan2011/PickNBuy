@@ -4,6 +4,11 @@ import { getProduct } from '../../actions/productAction';
 import { useParams } from 'react-router-dom';
 import Loader from '../layouts/Loader';
 import { Carousel } from 'react-bootstrap';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+
 
 function ProductDetail() {
 
@@ -15,7 +20,9 @@ function ProductDetail() {
 
         dispatch(getProduct(id));
 
-    }, [])
+    }, [dispatch]);
+    if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
     return (
         <Fragment>
@@ -23,19 +30,16 @@ function ProductDetail() {
             <Fragment>
                 <div className="row f-flex justify-content-around">
                     <div className="col-12 col-lg-5 img-fluid" id="product_image">
-                    {product.productImages && product.productImages.map(productImage => 
-                    <img
-              className="card-img-top mx-auto"
-              src={productImage.images}
-            />)}
+                 
+                        <Swiper loop={true} navigation modules={[Navigation]} className="mySwiper">
+                        {product.productImages && product.productImages.map(productImage => 
+                                <SwiperSlide key={productImage.id}>
+                                <img src={productImage.images} alt={product.productname} width="500" height="500" />
+                                </SwiperSlide>
+                        )}
+                        </Swiper>
                       
-                          {/* <Carousel pause="hover">
-                            {product.productImages && product.productImages.map(productImage => 
-                            <Carousel.Item key={productImage.id}>
-                            <img className='d-block w-100' src={productImage.images} alt={product.productname} height="500" width="500" />
-                            </Carousel.Item>
-                            )}
-                        </Carousel>   */}
+                        
                     </div>
 
                     <div className="col-12 col-lg-5 mt-5">

@@ -7,6 +7,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import ProductDetail from './components/product/ProductDetail';
+//import ProductSlide from './components/product/ProductSlide';
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 function App() {
   return (
@@ -19,6 +22,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home />}></Route>
             <Route path='/product/:id' element={<ProductDetail />}></Route>
+            {/* <Route path='/ProductSlide' element={<ProductSlide />}></Route> */}
           </Routes>
         </div>
         <Footer />

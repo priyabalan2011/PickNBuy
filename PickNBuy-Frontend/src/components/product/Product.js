@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 
 export default function Product({product}) {
@@ -11,7 +12,7 @@ export default function Product({product}) {
             />
             <div className="card-body d-flex flex-column">
               <h5 className="card-title">
-                <a href="">{product.productname}</a>
+                <Link to={`/product/${product.id}`}>{product.productname}</Link>
               </h5>
               <div className="ratings mt-auto">
                 <div className="rating-outer">
@@ -20,7 +21,7 @@ export default function Product({product}) {
                 <span id="no_of_reviews">({product.numOfReviews} Reviews)</span>
               </div>
               <p className="card-text">${product.price}</p>
-              <a href="#" id="view_btn" className="btn btn-block">View Details</a>
+              <Link to={`/product/${product.id}`} id="view_btn" className="btn btn-block">View Details</Link>
             </div>
           </div>
       </div>        
