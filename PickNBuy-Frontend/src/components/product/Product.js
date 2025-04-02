@@ -9,6 +9,7 @@ export default function Product({product}) {
             <img
               className="card-img-top mx-auto"
               src={product.productImages[0].images}
+              alt={product.productname}
             />
             <div className="card-body d-flex flex-column">
               <h5 className="card-title">

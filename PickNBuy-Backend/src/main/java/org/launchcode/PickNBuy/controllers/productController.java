@@ -6,7 +6,11 @@ import org.launchcode.PickNBuy.exception.ProductNotFoundException;
 import org.launchcode.PickNBuy.models.Category;
 import org.launchcode.PickNBuy.models.Product;
 import org.launchcode.PickNBuy.models.ProductImages;
+import org.launchcode.PickNBuy.models.ProductResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +31,7 @@ public class productController {
 
     //list all the products.
     //GET http://localhost:8080/products/
-    @GetMapping("/")
+    @GetMapping("/all")
     List<Product> getAllProducts()
     {
         return productrepository.findAll();
@@ -102,32 +106,40 @@ public class productController {
 
 
     // Search by name
-    //GET http://localhost:8080/products/search?name=laptop
-    //GET http://localhost:8080/products/search?category=electronics
-    //GET http://localhost:8080/products/search?minPrice=500&maxPrice=1000
-    @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProducts(
+    //GET http://localhost:8080/products?name=laptop
+    //GET http://localhost:8080/products?category=electronics
+    //GET http://localhost:8080/products?minPrice=500&maxPrice=1000
+    @GetMapping("")
+    public  ResponseEntity<ProductResponseDTO> searchProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String seller)
     {
-        List<Product> products;
+        Page<Product> products;
+        Pageable pageable = PageRequest.of(page, size);
 
         if (name != null) {
-            products = productrepository.findByProductnameContainingIgnoreCase(name);
+            products = productrepository.findByProductnameContainingIgnoreCase(name,pageable);
         } else if (category != null) {
-            products = productrepository.findByCategory(Category.valueOf(category.toUpperCase()));
+            products = productrepository.findByCategory(Category.valueOf(category.toUpperCase()),pageable);
         } else if (seller != null) {
-            products = productrepository.findBySellerContainingIgnoreCase(seller);
+            products = productrepository.findBySellerContainingIgnoreCase(seller,pageable);
         } else if (minPrice != null && maxPrice != null) {
-           products = productrepository.findByPriceRange(minPrice, maxPrice);
+           products = productrepository.findByPriceRange(minPrice, maxPrice,pageable);
         } else {
-            products = productrepository.findAll();
+            products = productrepository.findAll(pageable);
         }
 
-        return ResponseEntity.ok(products); // Return empty list if no filters are provided
+        //return ResponseEntity.ok(products); // Return empty list if no filters are provided
+        ProductResponseDTO response = new ProductResponseDTO(
+                products.getContent(),
+                products.getTotalElements(),
+                size);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/addimages")
@@ -137,6 +149,34 @@ public class productController {
 
     }
 
+    // Search by name
+    //GET http://localhost:8080/products/search?name=laptop
+    //GET http://localhost:8080/products/search?category=electronics
+    //GET http://localhost:8080/products/search?minPrice=500&maxPrice=1000
+//    @GetMapping("/search")
+//    public ResponseEntity<List<Product>> searchProducts(
+//            @RequestParam(required = false) String name,
+//            @RequestParam(required = false) String category,
+//            @RequestParam(required = false) Double minPrice,
+//            @RequestParam(required = false) Double maxPrice,
+//            @RequestParam(required = false) String seller)
+//    {
+//        List<Product> products;
+//
+//        if (name != null) {
+//            products = productrepository.findByProductnameContainingIgnoreCase(name);
+//        } else if (category != null) {
+//            products = productrepository.findByCategory(Category.valueOf(category.toUpperCase()));
+//        } else if (seller != null) {
+//            products = productrepository.findBySellerContainingIgnoreCase(seller);
+//        } else if (minPrice != null && maxPrice != null) {
+//            products = productrepository.findByPriceRange(minPrice, maxPrice);
+//        } else {
+//            products = productrepository.findAll();
+//        }
+//
+//        return ResponseEntity.ok(products); // Return empty list if no filters are provided
+//    }
 
 
 

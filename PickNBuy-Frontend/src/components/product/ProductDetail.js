@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProduct } from '../../actions/productAction';
 import { useParams } from 'react-router-dom';
 import Loader from '../layouts/Loader';
-import { Carousel } from 'react-bootstrap';
+//import { Carousel } from 'react-bootstrap';
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
+import MetaData from '../layouts/MetaData';
 
 
 function ProductDetail() {
@@ -15,12 +16,12 @@ function ProductDetail() {
     const { product, loading, error } = useSelector((state) => state.productState)
     const dispatch = useDispatch();
     const { id } = useParams()
-
+    //alert(id)
     useEffect(() => {
 
         dispatch(getProduct(id));
 
-    }, [dispatch]);
+    }, [dispatch,id]);
     if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -28,6 +29,7 @@ function ProductDetail() {
         <Fragment>
             {loading?<Loader/>: 
             <Fragment>
+                <MetaData title={product.productname}/>
                 <div className="row f-flex justify-content-around">
                     <div className="col-12 col-lg-5 img-fluid" id="product_image">
                  

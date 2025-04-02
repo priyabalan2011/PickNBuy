@@ -1,5 +1,5 @@
 import { combineReducers,configureStore } from "@reduxjs/toolkit";
-import { configure } from "@testing-library/dom";
+//import { configure } from "@testing-library/dom";
 import { thunk } from "redux-thunk";
 import productsReducer from "./slices/productsSlices";
 import productReducer from "./slices/productSlice";

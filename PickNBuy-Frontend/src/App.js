@@ -4,7 +4,7 @@ import Footer from './components/layouts/Footer';
 import Home from './components/Home';
 import Header from './components/layouts/Header';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+//import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import ProductDetail from './components/product/ProductDetail';
 //import ProductSlide from './components/product/ProductSlide';
