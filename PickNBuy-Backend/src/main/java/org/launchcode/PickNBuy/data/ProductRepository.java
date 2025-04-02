@@ -15,8 +15,13 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Integer> {
    // List<Product> findAll(Pageable pageable);
     // Search by name (case insensitive)
-   Page<Product> findByProductnameContainingIgnoreCase(String name, Pageable pageable);
-    Page<Product> findByCategory(Category category,Pageable pageable);
+   Page<Product> findByProductnameContaining(String keyword, Pageable pageable);
+    Page<Product> findByCategory(String category, Pageable pageable);
+    Page<Product> findByProductnameContainingAndCategory(String keyword, String category, Pageable pageable);
+
+
+  // Page<Product> findByProductnameContainingIgnoreCase(String name, Pageable pageable);
+ //   Page<Product> findByCategory(Category category,Pageable pageable);
     Page<Product> findBySellerContainingIgnoreCase(String seller,Pageable pageable);
     // Search by price range
     @Query("SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice")

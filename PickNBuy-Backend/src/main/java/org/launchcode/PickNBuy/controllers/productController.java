@@ -113,26 +113,33 @@ public class productController {
     public  ResponseEntity<ProductResponseDTO> searchProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
-            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String seller)
     {
         Page<Product> products;
-        Pageable pageable = PageRequest.of(page, size);
+        // Ensure the page is at least 1 to prevent negative indexes
+        int adjustedPage = (page > 0) ? page - 1 : 0;
 
-        if (name != null) {
-            products = productrepository.findByProductnameContainingIgnoreCase(name,pageable);
+        Pageable pageable = PageRequest.of(adjustedPage, size);
+        //Pageable pageable = PageRequest.of(page, size);
+
+        if (keyword != null && category != null) {
+            products = productrepository.findByProductnameContainingAndCategory(keyword, category, pageable);
+        } else if (keyword != null) {
+            products = productrepository.findByProductnameContaining(keyword, pageable);
         } else if (category != null) {
-            products = productrepository.findByCategory(Category.valueOf(category.toUpperCase()),pageable);
+            products = productrepository.findByCategory(category, pageable);
         } else if (seller != null) {
             products = productrepository.findBySellerContainingIgnoreCase(seller,pageable);
         } else if (minPrice != null && maxPrice != null) {
            products = productrepository.findByPriceRange(minPrice, maxPrice,pageable);
         } else {
-            products = productrepository.findAll(pageable);
+            products = productrepository.findAll(pageable);  // ✅ This works since findAll(Pageable) exists in JpaRepository
         }
+
 
         //return ResponseEntity.ok(products); // Return empty list if no filters are provided
         ProductResponseDTO response = new ProductResponseDTO(

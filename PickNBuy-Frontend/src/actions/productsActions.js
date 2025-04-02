@@ -1,13 +1,13 @@
 import axios from "axios";
 import { productsFail, productsRequest, productsSuccess } from "../slices/productsSlices";
 
-export const getProducts = (currentPage, size, name ,  minPrice, maxPrice,category ) => async (dispatch) =>{
+export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,category ) => async (dispatch) =>{
     try {
          dispatch(productsRequest());
 
          let link = `http://localhost:8080/products?page=${currentPage}`;
-         if(name) {
-            link += `&name=${name}`
+         if(keyword) {
+            link += `&keyword=${keyword}`
         }
         if(minPrice) {
             link += `&price[gte]=${minPrice}&price[lte]=${maxPrice}`

@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import ProductDetail from './components/product/ProductDetail';
 //import ProductSlide from './components/product/ProductSlide';
 import "bootstrap/dist/css/bootstrap.min.css";
+import ProductSearch from './components/product/ProductSearch';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <ToastContainer theme='dark' />
           <Routes>
             <Route path='/' element={<Home />}></Route>
+            <Route path='/search/:keyword' element={<ProductSearch />}></Route>
             <Route path='/product/:id' element={<ProductDetail />}></Route>
             {/* <Route path='/ProductSlide' element={<ProductSlide />}></Route> */}
           </Routes>
