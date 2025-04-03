@@ -1,7 +1,7 @@
 import axios from "axios";
 import { productsFail, productsRequest, productsSuccess } from "../slices/productsSlices";
 
-export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,category ) => async (dispatch) =>{
+export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,category ,rating) => async (dispatch) =>{
     try {
          dispatch(productsRequest());
 
@@ -15,6 +15,11 @@ export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,cat
         if(category) {
             link += `&category=${category}`
         }
+        if(rating) {
+            link += `&ratings=${rating}`
+        }
+        //alert(link)
+       // alert(category);
         // if(rating) {
         //     link += `&ratings=${rating}`
         // }
