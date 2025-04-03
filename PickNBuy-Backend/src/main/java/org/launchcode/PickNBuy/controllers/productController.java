@@ -125,8 +125,9 @@ public class productController {
 
         Pageable pageable = PageRequest.of(adjustedPage, size);
         //Pageable pageable = PageRequest.of(page, size);
-
-        if (keyword != null && category != null) {
+        if (keyword != null && minPrice !=null && maxPrice !=null) {
+            products = productrepository.findByFilters(keyword, category,minPrice,maxPrice,pageable);
+        } else if (keyword != null && category != null) {
             products = productrepository.findByProductnameContainingAndCategory(keyword, category, pageable);
         } else if (keyword != null) {
             products = productrepository.findByProductnameContaining(keyword, pageable);

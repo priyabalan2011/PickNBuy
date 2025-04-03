@@ -14,7 +14,7 @@ function Home() {
 
   const dispatch = useDispatch();
   const { products, loading, error, resPerPage, productsCount } = useSelector((state) => state.productsState)
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
 
   console.log(currentPage)
   const setCurrentPageNo = ({ selected }) => {
@@ -30,7 +30,7 @@ function Home() {
     }
 
     document.title = "Buy Best Products - PickNBuy";
-    dispatch(getProducts(currentPage, null, null, null, null, null, null));
+    dispatch(getProducts(currentPage+1, null, null, null, null, null, null));
   }, [error, dispatch, currentPage]);
 
   return (
@@ -45,7 +45,7 @@ function Home() {
             <div className="row">
               {Array.isArray(products) && products.map((product) => (
 
-                <Product key={product.id} product={product} />
+                <Product col={3} key={product.id} product={product} />
 
               ))}
 

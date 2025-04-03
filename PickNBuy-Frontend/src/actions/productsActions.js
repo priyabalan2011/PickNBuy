@@ -9,8 +9,8 @@ export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,cat
          if(keyword) {
             link += `&keyword=${keyword}`
         }
-        if(minPrice) {
-            link += `&price[gte]=${minPrice}&price[lte]=${maxPrice}`
+        if(maxPrice) {
+            link += `&minPrice=${maxPrice[0]}&maxPrice=${maxPrice[1]}`
         }
         if(category) {
             link += `&category=${category}`

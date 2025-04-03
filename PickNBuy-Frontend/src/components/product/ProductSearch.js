@@ -9,20 +9,27 @@ import { toast } from 'react-toastify';
 import Pagination from 'react-paginate';
 import { useParams } from 'react-router-dom';
 //import { current } from '@reduxjs/toolkit';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
 
 function ProductSearch() {
   //console.log("Helmet is rendering!");
 
   const dispatch = useDispatch();
   const { products, loading, error, resPerPage, productsCount } = useSelector((state) => state.productsState)
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const {keyword} = useParams();
+  const [price, setPrice] = useState([1,1000]);
+  const [priceChanged, setPriceChanged] = useState(price);
 
   console.log(currentPage)
   const setCurrentPageNo = ({ selected }) => {
     setCurrentPage(selected)
     // alert(selected)
   }
+  
 
   useEffect(() => {
     if (error) {
@@ -32,8 +39,8 @@ function ProductSearch() {
     }
 
     document.title = "Buy Best Products - PickNBuy";
-    dispatch(getProducts(currentPage, null, keyword, null, null, null, null));
-  }, [error, dispatch, currentPage,keyword]);
+    dispatch(getProducts(currentPage+1, null, keyword, null, priceChanged, null));
+  }, [error, dispatch, currentPage,keyword,priceChanged],price);
 
   return (
 
@@ -45,11 +52,48 @@ function ProductSearch() {
           <h1 id="products_heading">Search Products</h1>
           <section id="products" className="container mt-5">
             <div className="row">
-              {Array.isArray(products) && products.map((product) => (
+              <div className='col-6 col-md-3 mb-5 mt-5'>
+                 <div className='px-5' onMouseUp={()=>setPriceChanged(price)}>
 
-                <Product key={product.id} product={product} />
+                      <Slider
+                          range = {true}
+                          marks = {
+                            {
+                              1:"$1",
+                              1000:"$1000"
+                            }
+                          }
+                          min = {1}
+                          max = {1000}
+                          defaultValue={[1,1000]}
+                          value={price}
+                          onChange={(price)=>{
+                            setPrice(price)
+                            }}
+                          handleRender={
+                            renderProps => {
+                                return (
+                                    <Tooltip  overlay={`$${renderProps.props['aria-valuenow']}`}  >
+                                         <div {...renderProps.props}>  </div>
+                                    </Tooltip>
+                                )
+                            }
+                        }
 
-              ))}
+                      />
+                  </div>
+              </div>
+              <div className='col-6 col-md-9 '>
+                <div className='row'>
+                    {Array.isArray(products) && products.map((product) => (
+
+                     <Product col={4} key={product.id} product={product} />
+
+                     ))}
+                </div>
+
+              </div>
+             
 
             </div>
           </section>
