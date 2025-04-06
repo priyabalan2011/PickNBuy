@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.launchcode.PickNBuy.data.userModelRepository;
 import org.launchcode.PickNBuy.exception.userNotFoundException;
+import org.launchcode.PickNBuy.models.LoginResponseDTO;
 import org.launchcode.PickNBuy.models.userModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,16 +72,16 @@ public class userController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody userModel user) {
+    public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody userModel user) {
         userModel existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser == null) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid email or password"));
         }
 
         if (Objects.equals(user.getPassword(), existingUser.getPassword())) {
-            return new ResponseEntity<>("Login successful", HttpStatus.OK);
+            return ResponseEntity.ok(new LoginResponseDTO(existingUser, null));
         } else {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid email or password"));
         }
     }
 
