@@ -10,6 +10,7 @@ import org.launchcode.PickNBuy.models.userModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class userController {
 
     @Autowired
     userModelRepository userRepository;
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private static final String userSessionKey = "user";
 
@@ -61,14 +63,20 @@ public class userController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody userModel user) {
+    public ResponseEntity<LoginResponseDTO> registerUser(@RequestBody userModel user) {
+        if (user.getEmail() == null || user.getName() == null || user.getPassword()==null) {
+            return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid name or email or password"));
+        }
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+           // return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok(new LoginResponseDTO(null, "Email already exists"));
         }
 
-        user.setPassword(user.getPassword());
+       // user.setPassword(user.getPassword());
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
-        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+       // return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+        return ResponseEntity.ok(new LoginResponseDTO(user, null));
     }
 
     @PostMapping("/login")
@@ -78,7 +86,7 @@ public class userController {
             return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid email or password"));
         }
 
-        if (Objects.equals(user.getPassword(), existingUser.getPassword())) {
+        if (encoder.matches(user.getPassword(), existingUser.getPassword())) {
             return ResponseEntity.ok(new LoginResponseDTO(existingUser, null));
         } else {
             return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid email or password"));

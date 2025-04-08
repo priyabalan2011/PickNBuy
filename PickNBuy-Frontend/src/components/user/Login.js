@@ -4,7 +4,7 @@ import Metadata from '../layouts/MetaData'
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthError, login } from '../../actions/userActions';
 import {toast} from 'react-toastify';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
 const [ email, setEmail ] = useState("");
 const [password, setPassword] = useState("");
@@ -78,7 +78,7 @@ useEffect(() => {
                       LOGIN
                   </button>
 
-                  <a href="#" className="float-right mt-3">New User?</a>
+                  <Link to="/register" className="float-right mt-3">New User?</Link>
               </form>
           </div>
       </div>

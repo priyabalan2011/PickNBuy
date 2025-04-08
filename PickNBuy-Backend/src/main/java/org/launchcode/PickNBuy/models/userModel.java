@@ -53,6 +53,8 @@ public class userModel extends AbstractEntity{
         this.name = name;
         this.email = email;
         this.password = encoder.encode(password);
+        this.role="user";
+       // this.password = password;
     }
     public boolean isMatchingPassword(String password) {
         return encoder.matches(password, password);
@@ -61,6 +63,9 @@ public class userModel extends AbstractEntity{
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        if(this.role==null){
+            this.role="user";
+        }
     }
     public String getName() {
         return name;

@@ -11,6 +11,7 @@ import ProductDetail from './components/product/ProductDetail';
 import "bootstrap/dist/css/bootstrap.min.css";
 import ProductSearch from './components/product/ProductSearch';
 import Login from './components/user/Login';
+import Register from './components/user/Register';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path='/search/:keyword' element={<ProductSearch />}></Route>
             <Route path='/product/:id' element={<ProductDetail />}></Route>
             <Route path='/login' element={<Login />}></Route>
+            <Route path='/register' element={<Register />}></Route>
             {/* <Route path='/ProductSlide' element={<ProductSlide />}></Route> */}
           </Routes>
         </div>
