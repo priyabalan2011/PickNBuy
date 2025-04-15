@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import {register,clearAuthError} from '../../actions/userActions';
 import { useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
 
 function Register() {
 
@@ -38,17 +39,32 @@ function Register() {
         e.preventDefault();
         if(userData.name === "")
         {
-            alert("please Enter Name");
+            //alert("please Enter Name");
+            Swal.fire({
+                icon: "info",
+               // title:"Oops...",
+                text: "Please Enter Name"
+            });
             return;
         }
         if(userData.email === "")
         {
-            alert("please Enter Email");
+           // alert("please Enter Email");
+            Swal.fire({
+                icon: "info",
+               // title:"Oops...",
+                text: "Please Enter Email"
+            });
             return;
         }
         if(userData.password === "")
         {
-            alert("please Enter Password");
+           // alert("please Enter Password");
+           Swal.fire({
+            icon: "info",
+           // title:"Oops...",
+            text: "Please Enter password"
+        });
             return;
         }
 
@@ -57,18 +73,32 @@ function Register() {
         formData.append('email',userData.email);
         formData.append('password',userData.password);
         formData.append('avatar',avatar);
-        dispatch(register(userData.name,userData.email,userData.password,avatar));
+       // alert(avatar);
+        //dispatch(register(userData.name,userData.email,userData.password,avatar));
+        dispatch(register(formData));
     }
 
      useEffect(()=>{
         //alert(loading);
         if(isAuthenticated){
+            Swal.fire({
+                icon: "success",
+               // title:"Oops...",
+                text: "Registered Successfully"
+            });
                 navigate('/');
+                return;
         }
         if(error)
         {
-            alert(error);
+            //alert(error);
+            Swal.fire({
+                icon: "error",
+               // title:"Oops...",
+                text: error
+            });
             dispatch(clearAuthError);
+            return;
         }
 
     },[error,loading,dispatch,isAuthenticated,navigate])

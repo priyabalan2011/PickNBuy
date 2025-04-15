@@ -8,15 +8,23 @@ import org.launchcode.PickNBuy.exception.userNotFoundException;
 import org.launchcode.PickNBuy.models.LoginResponseDTO;
 import org.launchcode.PickNBuy.models.userModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 //@Controller("/")
 //@ResponseBody
@@ -25,13 +33,14 @@ import java.util.Optional;
 @CrossOrigin(origins ="*")
 public class userController {
 
-    //    public String Hello()
-//    {
-//        return "index";
-//    }
+
 
     @Autowired
     userModelRepository userRepository;
+
+    @Value("${upload.path}")
+    private String uploadPath;
+
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private static final String userSessionKey = "user";
@@ -62,22 +71,74 @@ public class userController {
 //    }
 
 
+//    @PostMapping("/register")
+//    public ResponseEntity<LoginResponseDTO> registerUser(@RequestBody userModel user) {
+//        if (user.getEmail() == null || user.getName() == null || user.getPassword()==null) {
+//            return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid name or email or password"));
+//        }
+//        if (userRepository.findByEmail(user.getEmail()) != null) {
+//           // return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+//            return ResponseEntity.ok(new LoginResponseDTO(null, "Email already exists"));
+//        }
+//
+//       // user.setPassword(user.getPassword());
+//        user.setPassword(encoder.encode(user.getPassword()));
+//        userRepository.save(user);
+//       // return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+//        return ResponseEntity.ok(new LoginResponseDTO(user, null));
+//    }
+
     @PostMapping("/register")
-    public ResponseEntity<LoginResponseDTO> registerUser(@RequestBody userModel user) {
-        if (user.getEmail() == null || user.getName() == null || user.getPassword()==null) {
+    public ResponseEntity<LoginResponseDTO> registerUser(
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatarFile) {
+
+        try {
+
+            if (email == null || name == null || password ==null) {
             return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid name or email or password"));
         }
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(email) != null) {
            // return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
             return ResponseEntity.ok(new LoginResponseDTO(null, "Email already exists"));
         }
+            userModel user = new userModel();
+            if (avatarFile != null && !avatarFile.isEmpty()) {
 
-       // user.setPassword(user.getPassword());
-        user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);
-       // return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
-        return ResponseEntity.ok(new LoginResponseDTO(user, null));
+                // Save file
+                String fileName = UUID.randomUUID() + "_" + avatarFile.getOriginalFilename();
+                Path uploadDir = Paths.get(uploadPath);
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                Path filePath = uploadDir.resolve(fileName);
+                Files.copy(avatarFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                user.setAvator("/uploads/" + fileName); // stored path
+            }
+            // Save user with avatar path
+
+            user.setName(name);
+            user.setPassword(encoder.encode(password));
+            user.setEmail(email);
+
+
+            userRepository.save(user);
+
+          //  return ResponseEntity.ok("User registered successfully!");
+            return ResponseEntity.ok(new LoginResponseDTO(user, null));
+
+        } catch (IOException e) {
+           // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
+            return ResponseEntity.ok(new LoginResponseDTO(null, "Failed to upload image"));
+        }
     }
+
+
+
+
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody userModel user) {
