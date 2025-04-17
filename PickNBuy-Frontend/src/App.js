@@ -12,9 +12,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import ProductSearch from './components/product/ProductSearch';
 import Login from './components/user/Login';
 import Register from './components/user/Register';
+import { useEffect } from 'react';
+import store from './store';
+import { loadUser } from './actions/userActions';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 
 function App() {
+
+  useEffect(()=>{
+
+    store.dispatch(loadUser);
+
+  })
   return (
     <Router>
       <div className="App">

@@ -167,9 +167,22 @@ public class userController {
         return userRepository.findAll();
     }
 
+//    @GetMapping("/{id}")
+//    public userModel getUserById(@PathVariable int id) {
+//        return userRepository.findById(id).orElseThrow(() -> new userNotFoundException(id));
+//
+//    }
+
     @GetMapping("/{id}")
-    public userModel getUserById(@PathVariable int id) {
-        return userRepository.findById(id).orElseThrow(() -> new userNotFoundException(id));
+    public ResponseEntity<LoginResponseDTO> getUserById(@PathVariable int id) {
+        Optional<userModel> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(new LoginResponseDTO(optionalUser.get(), null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new LoginResponseDTO(null, "User not found with ID: " + id));
+        }
 
     }
 
