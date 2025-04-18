@@ -17,6 +17,9 @@ import store from './store';
 import { loadUser } from './actions/userActions';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import Profile from './components/user/Profile';
+import ProtectedRoute from './components/route/ProtectedRoute';
+import UpdateProfile from './components/user/UpdateProfile';
 
 
 function App() {
@@ -39,6 +42,8 @@ function App() {
             <Route path='/product/:id' element={<ProductDetail />}></Route>
             <Route path='/login' element={<Login />}></Route>
             <Route path='/register' element={<Register />}></Route>
+            <Route path='/myprofile' element={<ProtectedRoute><Profile /></ProtectedRoute>}></Route>
+            <Route path='/myprofile/update' element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>}></Route>
             {/* <Route path='/ProductSlide' element={<ProductSlide />}></Route> */}
           </Routes>
         </div>

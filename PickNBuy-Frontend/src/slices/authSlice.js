@@ -85,7 +85,48 @@ const authSlice = createSlice({
                 error: action.payload.error
               // error: "Error"
             }
-        }
+        },
+        logoutSuccess(state,action){
+            return {
+                loading: false,
+                isAuthenticated: false,
+                error : null
+            }
+        },
+        logoutFail(state,action){
+            return{
+                ...state,//it will maintain the previous state value.
+                error: action.payload.error
+              // error: "Error"
+            }
+        },
+        updateProfileRequest(state,action){
+            return {
+                ...state,
+                loading: true ,
+                isUpdated : false   
+            }
+
+        },
+        updateProfileSuccess(state,action){
+            return {
+                ...state,
+                loading: false,
+                user : action.payload.user,
+                error : null,
+                isUpdated : true
+            }
+        },
+        updateProfileFail(state,action){
+            return{
+                ...state,//it will maintain the previous state value.
+                loading: false,
+                error: action.payload.error,
+    
+
+              // error: "Error"
+            }
+        },
     }
 
 });
@@ -102,7 +143,12 @@ export const {
     registerFail, 
     loadUserRequest,
     loadUserSuccess,
-    loadUserFail
+    loadUserFail,
+    logoutSuccess,
+    logoutFail,
+    updateProfileRequest,
+    updateProfileSuccess,
+    updateProfileFail
 } = actions;
 
 export default reducer;

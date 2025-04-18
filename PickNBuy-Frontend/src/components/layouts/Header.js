@@ -1,14 +1,23 @@
 import React from 'react'
 import Search from './Search'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { Dropdown, DropdownButton, Image } from 'react-bootstrap'
+import { logout } from '../../actions/userActions'
 
 //import DropdownItem from 'react-bootstrap/esm/DropdownItem'
 
 function Header() {
 
   const {user, error,isAuthenticated} = useSelector(state => state.authState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    dispatch(logout);
+
+  }
+
   return (
     <div> <nav className="navbar row">
     <div className="col-12 col-md-3">
@@ -35,8 +44,9 @@ function Header() {
               <span>{user.name}</span>
         </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                 <li><a className="dropdown-item text-danger" href="#">Logout</a></li>
-                 {/* <li><a className="dropdown-item" href="#">Logout</a></li> */}
+                 <li><a className="dropdown-item text-dark" onClick={()=>{navigate('/myprofile')}}>Profile</a></li>
+                 <li><a className="dropdown-item text-danger" href="#" onClick={logoutHandler}>Logout</a></li>
+                
            </ul></div>
          
 

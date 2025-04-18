@@ -136,7 +136,52 @@ public class userController {
     }
 
 
+    @PutMapping("/update")
+    public ResponseEntity<LoginResponseDTO> updateUser(
+            @RequestParam("id") int id,
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatarFile) {
 
+        try {
+            // Find user by ID
+            Optional<userModel> optionalUser = userRepository.findById(id);
+            if (!optionalUser.isPresent()) {
+                return ResponseEntity.ok(new LoginResponseDTO(null, "User not found"));
+            }
+
+            userModel user = optionalUser.get();
+
+            // Check if email is changing and already taken
+            if (!user.getEmail().equals(email) && userRepository.findByEmail(email) != null) {
+                return ResponseEntity.ok(new LoginResponseDTO(null, "Email already exists"));
+            }
+
+            // Update avatar if provided
+            if (avatarFile != null && !avatarFile.isEmpty()) {
+                String fileName = UUID.randomUUID() + "_" + avatarFile.getOriginalFilename();
+                Path uploadDir = Paths.get(uploadPath);
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                Path filePath = uploadDir.resolve(fileName);
+                Files.copy(avatarFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                user.setAvator("/uploads/" + fileName);
+            }
+
+            // Update user details
+            user.setName(name);
+            user.setEmail(email);
+           // user.setPassword(encoder.encode(password)); // Optional: only if password is being reset
+
+            userRepository.save(user);
+
+            return ResponseEntity.ok(new LoginResponseDTO(user, null));
+
+        } catch (IOException e) {
+            return ResponseEntity.ok(new LoginResponseDTO(null, "Failed to upload image"));
+        }
+    }
 
 
 
