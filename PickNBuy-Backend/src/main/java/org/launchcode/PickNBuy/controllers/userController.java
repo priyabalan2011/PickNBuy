@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.launchcode.PickNBuy.data.userModelRepository;
 import org.launchcode.PickNBuy.exception.userNotFoundException;
+import org.launchcode.PickNBuy.models.ChangePasswordRequest;
 import org.launchcode.PickNBuy.models.LoginResponseDTO;
 import org.launchcode.PickNBuy.models.userModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,6 +252,33 @@ public class userController {
                     user1.setRole(user.getRole());
                     return userRepository.save(user1);
                 }).orElseThrow(() -> new userNotFoundException(id));
+    }
+
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestParam("id") int id,
+            @RequestParam("oldPassword")String oldPassword,
+            @RequestParam("password") String newPassword) {
+
+        Optional<userModel> optionalUser = userRepository.findById(id);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        userModel user = optionalUser.get();
+
+        // Verify old password matches
+        if (!encoder.matches(oldPassword, user.getPassword())) {
+            return ResponseEntity.badRequest().body("Old password is incorrect");
+        }
+
+
+        // Update password
+        user.setPassword(encoder.encode(newPassword));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password changed successfully");
     }
 
 }

@@ -1,4 +1,4 @@
-import { loginRequest, loginSuccess, loginFail, clearError, registerRequest, registerSuccess, registerFail, loadUserRequest, loadUserFail, loadUserSuccess, logoutSuccess, logoutFail, updateProfileRequest, updateProfileFail, updateProfileSuccess } from "../slices/authSlice"
+import { loginRequest, loginSuccess, loginFail, clearError, registerRequest, registerSuccess, registerFail, loadUserRequest, loadUserFail, loadUserSuccess, logoutSuccess, logoutFail, updateProfileRequest, updateProfileFail, updateProfileSuccess, updatePasswordRequest, updatePasswordFail, updatePasswordSuccess } from "../slices/authSlice"
 import axios from "axios";
 
 export const login = (email, password) => async (dispatch) => {
@@ -114,4 +114,26 @@ export const updateprofile = (userData) => async (dispatch) => {
     } catch (error) {
         dispatch(updateProfileFail(error.data));
     }
+}
+
+
+export const updatepassword = (formData) => async (dispatch) => {
+
+    try {
+        dispatch(updatePasswordRequest());
+    
+        const { data } = await axios.put(
+          'http://localhost:8080/user/change-password',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+    
+        dispatch(updatePasswordSuccess(data));
+      } catch (error) {
+        dispatch(updatePasswordFail(error.response?.data || 'Something went wrong'));
+      }
 }
