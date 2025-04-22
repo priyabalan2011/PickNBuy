@@ -67,7 +67,7 @@ useEffect(() => {
                       />
                   </div>
 
-                  <a href="#" className="float-right mb-4">Forgot Password?</a>
+                  <Link to="/password/forgot" className="float-right mb-4">Forgot Password?</Link>
 
                   <button
                       id="login_button"

@@ -1,4 +1,4 @@
-import { loginRequest, loginSuccess, loginFail, clearError, registerRequest, registerSuccess, registerFail, loadUserRequest, loadUserFail, loadUserSuccess, logoutSuccess, logoutFail, updateProfileRequest, updateProfileFail, updateProfileSuccess, updatePasswordRequest, updatePasswordFail, updatePasswordSuccess } from "../slices/authSlice"
+import { loginRequest, loginSuccess, loginFail, clearError, registerRequest, registerSuccess, registerFail, loadUserRequest, loadUserFail, loadUserSuccess, logoutSuccess, logoutFail, updateProfileRequest, updateProfileFail, updateProfileSuccess, updatePasswordRequest, updatePasswordFail, updatePasswordSuccess, forgotPasswordRequest, forgotPasswordSuccess, forgotPasswordFail, resetPasswordRequest, resetPasswordSuccess, resetPasswordFail } from "../slices/authSlice"
 import axios from "axios";
 
 export const login = (email, password) => async (dispatch) => {
@@ -135,5 +135,39 @@ export const updatepassword = (formData) => async (dispatch) => {
         dispatch(updatePasswordSuccess(data));
       } catch (error) {
         dispatch(updatePasswordFail(error.response?.data || 'Something went wrong'));
+      }
+}
+
+export const forgotpassword = (formData) => async (dispatch) => {
+
+    try {
+        dispatch(forgotPasswordRequest());
+    
+        const { data } = await axios.post(
+          'http://localhost:8080/api/auth/forgot-password',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+    
+        dispatch(forgotPasswordSuccess(data));
+      } catch (error) {
+        dispatch(forgotPasswordFail(error.response?.data || 'Something went wrong'));
+      }
+}
+
+export const resetpassword = (newPassword,token) => async (dispatch) => {
+
+    try {
+        dispatch(resetPasswordRequest());
+    
+        const { data } = await axios.post(`http://localhost:8080/api/auth/reset-password?token=${token}&newPassword=${newPassword}`);
+    
+        dispatch(resetPasswordSuccess(data));
+      } catch (error) {
+        dispatch(resetPasswordFail(error.response?.data || 'Something went wrong'));
       }
 }

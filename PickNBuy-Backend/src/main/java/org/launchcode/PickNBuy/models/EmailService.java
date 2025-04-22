@@ -11,7 +11,7 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendForgotPasswordEmail(String to, String resetToken) {
-        String resetLink = "http://localhost:8080/api/auth/reset-password?token=" + resetToken;
+        String resetLink = "http://localhost:3000/password/reset/" + resetToken;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
