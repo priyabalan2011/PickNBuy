@@ -144,7 +144,7 @@ export const forgotpassword = (formData) => async (dispatch) => {
         dispatch(forgotPasswordRequest());
     
         const { data } = await axios.post(
-          'http://localhost:8080/api/auth/forgot-password',
+          'http://localhost:8080/auth/forgot-password',
           formData,
           {
             headers: {
@@ -164,7 +164,7 @@ export const resetpassword = (newPassword,token) => async (dispatch) => {
     try {
         dispatch(resetPasswordRequest());
     
-        const { data } = await axios.post(`http://localhost:8080/api/auth/reset-password?token=${token}&newPassword=${newPassword}`);
+        const { data } = await axios.post(`http://localhost:8080/auth/reset-password?token=${token}&newPassword=${newPassword}`);
     
         dispatch(resetPasswordSuccess(data));
       } catch (error) {

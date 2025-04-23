@@ -6,13 +6,14 @@ import org.launchcode.PickNBuy.models.LoginResponseDTO;
 import org.launchcode.PickNBuy.models.userModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @CrossOrigin(origins = "*")
 public class ForgotPasswordController {
     @Autowired
@@ -20,6 +21,7 @@ public class ForgotPasswordController {
 
     @Autowired
     private userModelRepository userRepository;
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 //    @GetMapping("/")
 //    public String sample()
@@ -48,13 +50,13 @@ public class ForgotPasswordController {
         userModel user = userRepository.findByResetPasswordToken(token);
         if (user == null) {
             // return "Invalid token!";
-            return ResponseEntity.ok(new LoginResponseDTO(null, "Invalid token!"));
+            return ResponseEntity.badRequest().body(new LoginResponseDTO(null, "Invalid token!"));
         }
         if (user.getResetPasswordTokenExpire().isBefore(LocalDateTime.now())) {
             // return "Token has expired!";
-            return ResponseEntity.ok(new LoginResponseDTO(null, "Token has expired!"));
+            return ResponseEntity.badRequest().body(new LoginResponseDTO(null, "Token has expired!"));
         }
-        user.setPassword(newPassword); // Ensure password is hashed before saving
+        user.setPassword(encoder.encode(newPassword)); // Ensure password is hashed before saving
         user.setResetPasswordToken(null);
         user.setResetPasswordTokenExpire(null);
         userRepository.save(user);
