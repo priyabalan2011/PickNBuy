@@ -232,6 +232,19 @@ public class userController {
 
     }
 
+    @GetMapping("/myprofile")
+    public ResponseEntity<LoginResponseDTO> getUserProfile(@RequestParam String email) {
+        userModel optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser != null) {
+            return ResponseEntity.ok(new LoginResponseDTO(optionalUser, null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new LoginResponseDTO(null, "User not found "));
+        }
+
+    }
+
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable int id){
         if(!userRepository.existsById(id)){

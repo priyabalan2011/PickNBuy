@@ -57,9 +57,11 @@ export const register = (userData) => async (dispatch) => {
 
 export const loadUser = async (dispatch) => {
 
+    const email = window.sessionStorage.getItem("userEmail");
+
     try {
         dispatch(loadUserRequest());
-        const { data } = await axios.get(`http://localhost:8080/user/register`);
+        const { data } = await axios.get(`http://localhost:8080/user/myprofile?email=${email}`);
 
         console.log(data)
 

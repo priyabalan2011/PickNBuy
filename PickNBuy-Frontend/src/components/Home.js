@@ -23,6 +23,7 @@ function Home() {
   }
 
   useEffect(() => {
+   // alert(window.sessionStorage.getItem("userEmail"));
     if (error) {
       return toast('Unable to send products!', {
         position: "bottom-center"

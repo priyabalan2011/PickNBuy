@@ -20,8 +20,10 @@ const submitHandler =(e) => {
  
 
 useEffect(() => {
+    //alert(window.sessionStorage.getItem("userEmail"));
 
     if(isAuthenticated){
+        sessionStorage.setItem("userEmail",email);
         navigate('/');
     }
     if(error){

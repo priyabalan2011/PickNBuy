@@ -15,6 +15,7 @@ function Header() {
 
   const logoutHandler = () => {
     dispatch(logout);
+    sessionStorage.setItem("userEmail","");
 
   }
 

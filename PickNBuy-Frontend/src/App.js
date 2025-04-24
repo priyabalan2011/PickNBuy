@@ -31,7 +31,7 @@ function App() {
 
     store.dispatch(loadUser);
 
-  })
+  },[])
   return (
     <Router>
       <div className="App">
