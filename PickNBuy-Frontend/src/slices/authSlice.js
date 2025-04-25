@@ -127,6 +127,12 @@ const authSlice = createSlice({
               // error: "Error"
             }
         },
+        clearUpdateProfile(state,action){
+            return{
+                ...state,//it will maintain the previous state value.
+                isUpdated: false
+            }
+        },
 
         updatePasswordRequest(state,action){
             return {
@@ -234,6 +240,7 @@ export const {
     updateProfileRequest,
     updateProfileSuccess,
     updateProfileFail,
+    clearUpdateProfile,
     updatePasswordRequest,
     updatePasswordSuccess,
     updatePasswordFail,

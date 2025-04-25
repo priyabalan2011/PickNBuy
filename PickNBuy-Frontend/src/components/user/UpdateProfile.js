@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Swal from "sweetalert2";
 import {register,clearAuthError, updateprofile} from '../../actions/userActions';
+import { clearUpdateProfile } from '../../slices/authSlice';
 
 function UpdateProfile() {
 const { loading , user , error , isUpdated } = useSelector(state => state.authState);
@@ -71,6 +72,7 @@ useEffect (() => {
             icon: "success",
             text: "Updated Successfully"
         });
+        dispatch(clearUpdateProfile());
         return;
     }
     if(error)

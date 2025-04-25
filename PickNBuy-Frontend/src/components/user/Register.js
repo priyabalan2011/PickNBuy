@@ -144,7 +144,7 @@ function Register() {
                                     <img
                                         src={avatarPreview}
                                         className='rounded-circle'
-                                        alt='altimage'
+                                        alt='Avatar'
                                     />
                                 </figure>
                             </div>
