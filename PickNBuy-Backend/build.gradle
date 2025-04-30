@@ -25,6 +25,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation("org.springframework.security:spring-security-crypto:5.5.8")
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'com.stripe:stripe-java:24.0.0'
 }
 
 tasks.named('test') {

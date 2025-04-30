@@ -19,6 +19,12 @@ public class shippingInfo extends AbstractEntity  {
     private String phoneNo;
     @NotNull
     private String postalCode;
+    @NotNull
+    private String state;
+    @NotNull
+    private String name;
+
+
 
     @ManyToOne
     @NotNull
@@ -31,13 +37,15 @@ public class shippingInfo extends AbstractEntity  {
     @OneToOne(mappedBy = "shippinginfo")
     private Orders order;
 
-    public shippingInfo(String address, String country, String city, String phoneNo, String postalCode, userModel user) {
+    public shippingInfo(String address, String country, String city, String phoneNo, String postalCode,String state, userModel user,String name) {
         this.address = address;
         this.country = country;
         this.city = city;
         this.phoneNo = phoneNo;
         this.postalCode = postalCode;
+        this.state=state;
         this.user = user;
+        this.name=name;
     }
 
     public String getAddress() {
@@ -68,6 +76,14 @@ public class shippingInfo extends AbstractEntity  {
         return phoneNo;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public void setPhoneNo(String phoneNo) {
         this.phoneNo = phoneNo;
     }
@@ -82,6 +98,14 @@ public class shippingInfo extends AbstractEntity  {
 
     public userModel getUser() {
         return user;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setUser(userModel user) {
