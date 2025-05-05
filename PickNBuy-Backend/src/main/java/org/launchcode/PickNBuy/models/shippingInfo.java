@@ -1,13 +1,10 @@
 package org.launchcode.PickNBuy.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-@Entity
-public class shippingInfo extends AbstractEntity  {
+@Embeddable
+public class shippingInfo  {
 
     @NotNull
     private String address;
@@ -21,31 +18,31 @@ public class shippingInfo extends AbstractEntity  {
     private String postalCode;
     @NotNull
     private String state;
-    @NotNull
-    private String name;
+//    @NotNull
+//    private String name;
 
 
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name="user_id")
-    private userModel user;
+//    @ManyToOne
+//    @NotNull
+//    @JoinColumn(name="user_id")
+//    private userModel user;
 
     //@OneToOne
-    @NotNull
-   // @JoinColumn(name="order_id")
-    @OneToOne(mappedBy = "shippinginfo")
-    private Orders order;
-
-    public shippingInfo(String address, String country, String city, String phoneNo, String postalCode,String state, userModel user,String name) {
+//    @NotNull
+//   // @JoinColumn(name="order_id")
+//    @OneToOne(mappedBy = "shippinginfo")
+//    private Orders order;
+    public shippingInfo(){}
+    public shippingInfo(String address, String country, String city, String phoneNo, String postalCode,String state) {
         this.address = address;
         this.country = country;
         this.city = city;
         this.phoneNo = phoneNo;
         this.postalCode = postalCode;
         this.state=state;
-        this.user = user;
-        this.name=name;
+//        this.user = user;
+//        this.name=name;
     }
 
     public String getAddress() {
@@ -96,19 +93,5 @@ public class shippingInfo extends AbstractEntity  {
         this.postalCode = postalCode;
     }
 
-    public userModel getUser() {
-        return user;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUser(userModel user) {
-        this.user = user;
-    }
 }

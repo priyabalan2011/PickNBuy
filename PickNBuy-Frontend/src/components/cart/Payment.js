@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { validateShipping } from './Shipping';
 import { CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import Stripe from 'stripe';
+//import Stripe from 'stripe';
 import Swal from "sweetalert2";
 import { orderCompleted } from '../../slices/cartSlice';
+import { createOrder } from '../../actions/orderActions';
+import { clearOrderError} from '../../slices/orderSlice';
 
 function Payment() {
   const stripe = useStripe();
@@ -18,6 +20,7 @@ function Payment() {
   const {user} = useSelector (state => state.authState);
   const {items : cartItems,shippingInfo} = useSelector(state => state.cartState);
   const amount = orderInfo ?  Math.round(orderInfo.totalPrice * 100) : 0;
+  const { error : orderError } = useSelector(state => state.orderState);
 
   const paymentData={
     amount : amount,
@@ -50,8 +53,16 @@ function Payment() {
 
   useEffect(()=>{
     validateShipping(shippingInfo,navigate);
-    
-  },[])
+    if(orderError)
+    {
+        Swal.fire({
+            icon: "error",
+            text: orderError
+        });
+        dispatch(clearOrderError);
+        return;
+    }
+  },[dispatch, navigate, orderError])
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -83,12 +94,16 @@ function Payment() {
            // title:"Oops...",
             text: "Payment Success!"
         });
+        order.paymentInfo ={
+          id: (await result).paymentIntent.id,
+          status : (await result).paymentIntent.status
+        }
         dispatch(orderCompleted());
+       // dispatch(createOrder(order));
         navigate('/order/success');
         }else{
           Swal.fire({
             icon: "error",
-           // title:"Oops...",
             text: "Please try again!"
         });
         }

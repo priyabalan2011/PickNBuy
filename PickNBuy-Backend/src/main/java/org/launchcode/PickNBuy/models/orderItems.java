@@ -14,11 +14,10 @@ public class orderItems extends AbstractEntity{
 //    @Size(min=100, message="Product name cannot exceed 100 characters")
 //    private String productName;
 
-    @NotNull
-    private Integer productQuantity;
-
-    @NotNull
-    private Double unitPrice;
+    private String name;
+    private Integer quantity;
+    private String image;
+    private Double price;
 
     @ManyToOne
     @NotNull
@@ -37,11 +36,46 @@ public class orderItems extends AbstractEntity{
     @JsonBackReference
     private  Product product;
 
-    public orderItems(Integer productQuantity, Double unitPrice, Orders order, Product product) {
-        this.unitPrice=unitPrice;
-        this.productQuantity = productQuantity;
+    public orderItems(){}
+    public orderItems(String name, Integer quantity, String image, Double price, Orders order, Product product) {
+        this.name = name;
+        this.quantity = quantity;
+        this.image = image;
+        this.price = price;
         this.order = order;
         this.product = product;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public Orders getOrder() {
@@ -51,23 +85,6 @@ public class orderItems extends AbstractEntity{
     public void setOrder(Orders order) {
         this.order = order;
     }
-
-    public Double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(Double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public Integer getProductQuantity() {
-        return productQuantity;
-    }
-
-    public void setProductQuantity(Integer productQuantity) {
-        this.productQuantity = productQuantity;
-    }
-
 
     public Product getProduct() {
         return product;
