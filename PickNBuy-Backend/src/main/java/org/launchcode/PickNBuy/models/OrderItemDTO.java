@@ -6,7 +6,7 @@ public class OrderItemDTO {
     private int quantity;
     private String image;
     private double price;
-    private int productId;
+    private int product;
 
     public String getName() {
         return name;
@@ -40,11 +40,11 @@ public class OrderItemDTO {
         this.price = price;
     }
 
-    public int getProductId() {
-        return productId;
+    public int getProduct() {
+        return product;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setProduct(int product) {
+        this.product = product;
     }
 }

@@ -2,9 +2,7 @@ package org.launchcode.PickNBuy.controllers;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
-import org.hibernate.dialect.function.array.ArrayContainsUnnestFunction;
 import org.launchcode.PickNBuy.data.OrdersRepository;
 import org.launchcode.PickNBuy.data.ProductRepository;
 import org.launchcode.PickNBuy.data.userModelRepository;
@@ -57,8 +55,8 @@ public class OrderController {
             item.setQuantity(itemDto.getQuantity());
             item.setImage(itemDto.getImage());
 
-            Product product = productRepository.findById(itemDto.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found for ID: " + itemDto.getProductId()));
+            Product product = productRepository.findById(itemDto.getProduct())
+                    .orElseThrow(() -> new RuntimeException("Product not found for ID: " + itemDto.getProduct()));
             item.setProduct(product);
             item.setOrder(order);
 
@@ -76,16 +74,19 @@ public class OrderController {
     }
 
     // Get single order
-    @GetMapping("/order/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable int id) {
         Orders order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         return ResponseEntity.ok(Map.of("success", true, "order", order));
     }
 
     // Get current user's orders
-    @GetMapping("/myorders")
-    public ResponseEntity<?> getMyOrders(@RequestBody userModel currentUser) {
-        List<Orders> orders = orderRepository.findByUserId(currentUser.getId());
+    @GetMapping("/myorders/{userId}")
+    public ResponseEntity<?> getMyOrders(@PathVariable int userId) {
+        List<Orders> orders = orderRepository.findByUser_Id(userId) ;
+        if (orders == null || orders.isEmpty()) {
+            throw new ResourceNotFoundException("Order not found");
+        }
         return ResponseEntity.ok(Map.of("success", true, "orders", orders));
     }
 

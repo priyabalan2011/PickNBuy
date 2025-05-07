@@ -21,6 +21,7 @@ public class orderItems extends AbstractEntity{
 
     @ManyToOne
     @NotNull
+    @JsonIgnore
     @JoinColumn(name="order_id")
     private Orders order;
 
@@ -32,8 +33,8 @@ public class orderItems extends AbstractEntity{
     @NotNull
     @ManyToOne
     @JoinColumn(name="product_id")
-    @JsonIgnore
-    @JsonBackReference
+   // @JsonIgnore
+   // @JsonBackReference
     private  Product product;
 
     public orderItems(){}

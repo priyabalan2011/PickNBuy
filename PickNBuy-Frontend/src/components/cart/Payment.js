@@ -39,14 +39,16 @@ function Payment() {
     }
   }
 
+  
+
   const order = {
     orderItems : cartItems,
-    shippingInfo 
+    shippingDetails: shippingInfo 
   }
   if(orderInfo){
-    order.itemsPrice = orderInfo.itemsPrice;
+    order.itemsPrice = orderInfo.itemPrice;
     order.shippingPrice = orderInfo.shippingPrice;
-    order.taxprice = orderInfo.taxprice;
+    order.taxprice = orderInfo.taxPrice;
     order.totalPrice= orderInfo.totalPrice;
 
   }
@@ -95,11 +97,13 @@ function Payment() {
             text: "Payment Success!"
         });
         order.paymentInfo ={
-          id: (await result).paymentIntent.id,
+          pid: (await result).paymentIntent.id,
           status : (await result).paymentIntent.status
         }
+        order.userid = user.id;
+        sessionStorage.setItem('orderDetails', JSON.stringify(order));
         dispatch(orderCompleted());
-       // dispatch(createOrder(order));
+        dispatch(createOrder(JSON.stringify(order)));
         navigate('/order/success');
         }else{
           Swal.fire({

@@ -47,6 +47,7 @@ function Header() {
         </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                  <li><a className="dropdown-item text-dark" onClick={()=>{navigate('/myprofile')}}>Profile</a></li>
+                 <li><a className="dropdown-item text-dark" onClick={()=>{navigate('/orders')}}>Orders</a></li>
                  <li><a className="dropdown-item text-danger" href="#" onClick={logoutHandler}>Logout</a></li>
                 
            </ul></div>

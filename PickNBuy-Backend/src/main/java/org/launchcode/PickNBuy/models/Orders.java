@@ -1,5 +1,6 @@
 package org.launchcode.PickNBuy.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,6 +12,7 @@ public class Orders extends AbstractEntity{
 
     @ManyToOne
     @NotNull
+    @JsonIgnore
     @JoinColumn(name="user_id")
     private userModel user;
 
