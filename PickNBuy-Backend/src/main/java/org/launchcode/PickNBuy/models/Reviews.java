@@ -9,8 +9,13 @@ import jakarta.validation.constraints.NotNull;
 public class Reviews extends AbstractEntity{
 
 
-    @NotNull
-    private String user;
+//    @NotNull
+//    private String user;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+   // @JsonIgnore
+    //@JsonBackReference
+    private userModel user;
 
     private String rating;
     private String comment;
@@ -25,7 +30,7 @@ public class Reviews extends AbstractEntity{
     public Reviews() {
     }
 
-    public Reviews(String user, String rating, String comment,Product product) {
+    public Reviews(userModel user, String rating, String comment,Product product) {
 
         this.user = user;
         this.rating = rating;
@@ -33,11 +38,11 @@ public class Reviews extends AbstractEntity{
         this.product=product;
     }
 
-    public String getUser() {
+    public userModel getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(userModel user) {
         this.user = user;
     }
 
