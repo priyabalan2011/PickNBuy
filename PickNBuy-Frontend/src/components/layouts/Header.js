@@ -46,6 +46,9 @@ function Header() {
               <span>{user.name}</span>
         </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              {user.role === 'admin' && 
+                 <li><a className="dropdown-item text-dark" onClick={()=>{navigate('/admin/dashboard')}}>Dashboard</a></li>
+      }
                  <li><a className="dropdown-item text-dark" onClick={()=>{navigate('/myprofile')}}>Profile</a></li>
                  <li><a className="dropdown-item text-dark" onClick={()=>{navigate('/orders')}}>Orders</a></li>
                  <li><a className="dropdown-item text-danger" href="#" onClick={logoutHandler}>Logout</a></li>

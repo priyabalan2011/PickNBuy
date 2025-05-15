@@ -21,7 +21,7 @@ public class Product extends AbstractEntity{
     private String productname;
     private double price;
     private String description;
-    private String ratings;
+    private String ratings="";
 
     @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,7 +35,7 @@ public class Product extends AbstractEntity{
     @Min(value = 0, message = "Stock cannot be negative")
     @Max(value = 9999, message = "Stock cannot exceed 9999")
     private int stock;
-    private int numOfReviews;
+    private int numOfReviews=0;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -50,6 +50,7 @@ public class Product extends AbstractEntity{
 
     public Product() {
     }
+
 
     public Product(String productname, double price, String description, String ratings, Category category, String seller, int stock, int numOfReviews, LocalDateTime createdAt) {
         this.productname = productname;

@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom';
 import Loader from '../layouts/Loader';
 
-function ProtectedRoute({children}) {
-    const {isAuthenticated, loading} = useSelector(state => state.authState);
+function ProtectedRoute({ children , isAdmin }) {
+    const {isAuthenticated, loading , user} = useSelector(state => state.authState);
 
     if(!isAuthenticated && !loading && (sessionStorage.getItem("userEmail")==""))
     {
@@ -13,6 +13,11 @@ function ProtectedRoute({children}) {
         )
     }
     if(isAuthenticated){
+        if(isAdmin === true  &&  user.role !== 'admin'){
+            return(
+            <Navigate to="/"/>
+            )
+        }
         return children;
     }
     if(loading){

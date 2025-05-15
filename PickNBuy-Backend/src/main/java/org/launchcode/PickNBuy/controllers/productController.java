@@ -8,15 +8,24 @@ import org.launchcode.PickNBuy.models.Product;
 import org.launchcode.PickNBuy.models.ProductImages;
 import org.launchcode.PickNBuy.models.ProductResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 @RequestMapping("/products")
@@ -28,6 +37,9 @@ public class productController {
 
     @Autowired
     private ProductImagesRespository productImagesRespository;
+
+    @Value("${backend.base-url}")
+    private String baseUrl;
 
     //list all the products.
     //GET http://localhost:8080/products/
@@ -142,34 +154,61 @@ public class productController {
 
     }
 
-    // Search by name
-    //GET http://localhost:8080/products/search?name=laptop
-    //GET http://localhost:8080/products/search?category=electronics
-    //GET http://localhost:8080/products/search?minPrice=500&maxPrice=1000
-//    @GetMapping("/search")
-//    public ResponseEntity<List<Product>> searchProducts(
-//            @RequestParam(required = false) String name,
-//            @RequestParam(required = false) String category,
-//            @RequestParam(required = false) Double minPrice,
-//            @RequestParam(required = false) Double maxPrice,
-//            @RequestParam(required = false) String seller)
-//    {
-//        List<Product> products;
-//
-//        if (name != null) {
-//            products = productrepository.findByProductnameContainingIgnoreCase(name);
-//        } else if (category != null) {
-//            products = productrepository.findByCategory(Category.valueOf(category.toUpperCase()));
-//        } else if (seller != null) {
-//            products = productrepository.findBySellerContainingIgnoreCase(seller);
-//        } else if (minPrice != null && maxPrice != null) {
-//            products = productrepository.findByPriceRange(minPrice, maxPrice);
-//        } else {
-//            products = productrepository.findAll();
-//        }
-//
-//        return ResponseEntity.ok(products); // Return empty list if no filters are provided
-//    }
+    @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> createProduct(
+            @RequestParam("productname") String productname,
+            @RequestParam("price") double price,
+            @RequestParam("description") String description,
+            @RequestParam("category") Category category,
+            @RequestParam("seller") String seller,
+            @RequestParam("stock") int stock,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
+    ) throws IOException {
+
+        Product product = new Product();
+        product.setProductname(productname);
+        product.setPrice(price);
+        product.setDescription(description);
+       // product.setRatings(ratings);
+
+        product.setCategory(category);
+        product.setSeller(seller);
+        product.setStock(stock);
+      //  product.setNumOfReviews(numOfReviews);
+        product.setCreatedAt(LocalDateTime.now());
+
+        List<ProductImages> imageList = new ArrayList<>();
+        System.out.println("before");
+        // Set base directory inside project root
+        String uploadDir = new File("uploads/product").getAbsolutePath();
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs(); // create directory if not exists
+
+        if (files != null && !files.isEmpty()) {
+            System.out.println("Total files received: " + files.size());
+            for (MultipartFile file : files) {
+                System.out.println("File: " + file.getOriginalFilename());
+                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename(); // prevent name collisions
+                File dest = new File(dir, fileName); // safer file creation
+                file.transferTo(dest); // save file to disk
+
+                ProductImages image = new ProductImages();
+                image.setImages("/uploads/product/" + fileName);
+                image.setProduct(product);
+                imageList.add(image);
+            }
+        }
+
+        product.setProductImages(imageList);
+
+        // Save the product (cascade saves images)
+        productrepository.save(product);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "success", true,
+                "product", product
+        ));
+    }
 
 
 
