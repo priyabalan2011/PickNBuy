@@ -4,7 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const productsSlice = createSlice({
     name : 'products',
     initialState : {
-        loading : false
+        loading : false,
+        products: {}
     },
     reducers :{
         productsRequest(state,action){

@@ -8,30 +8,45 @@ import {
     MDBBtn
   } from 'mdb-react-ui-kit';
 import { clearError } from '../../slices/productsSlices';
-import { getAdminProducts } from '../../actions/productsActions';
+import { deleteProduct, getAdminProducts } from '../../actions/productsActions';
 import Loader from '../layouts/Loader';
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
+import { clearProductDeleted } from '../../slices/productSlice';
 
 const ProductList = () => {
 
     const { products=[], loading=true, error}= useSelector(state => state.productsState);
+    const {isProductDeleted , error: productError} = useSelector(state => state.productState);
     const dispatch = useDispatch();
 
+    const deleteHandler = (e,id) => {
+      e.target.disabled = true;
+      dispatch (deleteProduct(id))
+    }
+
     useEffect(() => {
-        if(error)
+        if(error || productError)
         {
             Swal.fire({
                 icon: "error",
-                text: error
+                text: error || productError
             });
             dispatch(clearError());
             return;
         }
 
+        if (isProductDeleted){
+          Swal.fire({
+              icon: "success",
+              text: "Product Deleted Successfully"
+          });
+          dispatch(clearProductDeleted());
+          return;
+      }
         dispatch(getAdminProducts());
-    }, [dispatch, error])
+    }, [dispatch, error,isProductDeleted])
 
   return (
     <div className='row'>
@@ -61,7 +76,7 @@ const ProductList = () => {
                     <td>{product.stock}</td>
                     <td>
                       <Link
-                        to={`/admin/product/${product.id}`}
+                        to={`/admin/products/${product.id}`}
                         className="btn btn-primary btn-sm me-2"
                       >
                         <i className="fa fa-pencil"></i>
@@ -69,7 +84,7 @@ const ProductList = () => {
                       <MDBBtn
                         color="danger"
                         size="sm"
-                       // onClick={(e) => deleteHandler(e, product.id)}
+                        onClick={(e) => deleteHandler(e, product.id)}
                       >
                         <i className="fa fa-trash"></i>
                       </MDBBtn>

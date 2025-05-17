@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 
 
 export default function Product({product,col}) {
+  const firstImage = product?.productImages?.[0]?.images || "/default-image.jpg"; 
   return (
           <div className={`col-sm-12 col-md-6 col-lg-${col} my-3`}>
           <div className="card p-3 rounded">
             <img
               className="card-img-top mx-auto"
-              src={product.productImages[0].images}
+             // src={product.productImages[0].images}
+             src={firstImage}
               alt={product.productname}
             />
             <div className="card-body d-flex flex-column">

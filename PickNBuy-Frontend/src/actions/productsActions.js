@@ -1,6 +1,6 @@
 import axios from "axios";
 import { adminProductsFail, adminProductsRequest, adminProductsSuccess, productsFail, productsRequest, productsSuccess } from "../slices/productsSlices";
-import { createReviewFail, createReviewRequest, createReviewSuccess, newProductFail, newProductRequest, newProductSuccess } from "../slices/productSlice";
+import { createReviewFail, createReviewRequest, createReviewSuccess, deleteProductFail, deleteProductRequest, deleteProductSuccess, newProductFail, newProductRequest, newProductSuccess, updateProductFail, updateProductRequest, updateProductSuccess } from "../slices/productSlice";
 
 export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,category ,rating) => async (dispatch) =>{
     try {
@@ -116,5 +116,49 @@ export const createNewProducts = productData => async (dispatch) =>{
     } catch (error) {
         //handle error.
         dispatch(newProductFail(error.response.data.message));
+    }
+}
+
+export const deleteProduct = id => async (dispatch) =>{
+    try {
+         dispatch(deleteProductRequest());
+
+         let link = `http://localhost:8080/products/${id}`;
+         
+         const response  =  await axios.delete(link);
+         if (!response || !response.data) {
+             throw new Error("No data received from server");
+         }
+ 
+         console.log(response.data);
+ 
+         dispatch(deleteProductSuccess(response.data));
+
+        
+    } catch (error) {
+        //handle error.
+        dispatch(deleteProductFail(error.response.data.message));
+    }
+}
+
+export const updateProduct = (id,productData) => async (dispatch) =>{
+    try {
+         dispatch(updateProductRequest());
+
+         let link = `http://localhost:8080/products/${id}`;
+         
+         const response  =  await axios.put(link,productData);
+         if (!response || !response.data) {
+             throw new Error("No data received from server");
+         }
+ 
+         console.log(response.data);
+ 
+         dispatch(updateProductSuccess(response.data));
+
+        
+    } catch (error) {
+        //handle error.
+        dispatch(updateProductFail(error.response.data.message));
     }
 }

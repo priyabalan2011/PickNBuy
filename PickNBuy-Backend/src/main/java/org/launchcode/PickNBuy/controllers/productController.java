@@ -3,10 +3,7 @@ package org.launchcode.PickNBuy.controllers;
 import org.launchcode.PickNBuy.data.ProductImagesRespository;
 import org.launchcode.PickNBuy.data.ProductRepository;
 import org.launchcode.PickNBuy.exception.ProductNotFoundException;
-import org.launchcode.PickNBuy.models.Category;
-import org.launchcode.PickNBuy.models.Product;
-import org.launchcode.PickNBuy.models.ProductImages;
-import org.launchcode.PickNBuy.models.ProductResponseDTO;
+import org.launchcode.PickNBuy.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -17,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +38,9 @@ public class productController {
 
     @Value("${backend.base-url}")
     private String baseUrl;
+
+    @Value("${app.upload-dir}")
+    private String uploaddir;
 
     //list all the products.
     //GET http://localhost:8080/products/
@@ -74,33 +75,74 @@ public class productController {
     //update the product based on the product id.
     //PUT http://localhost:8080/products/100
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable int id, @RequestBody Product updatedProduct) {
+    public ResponseEntity<?> updateProduct(
+            @PathVariable int id,
+            @ModelAttribute ProductUpdateDTO updatedProduct,
+            @RequestPart(required = false) MultipartFile[] files ) throws IOException {
+
         Optional<Product> optionalProduct = productrepository.findById(id);
+        if (optionalProduct.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "Product not found"));
+        }
 
-        if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.get();
+        Product existingProduct = optionalProduct.get();
 
-            // Update fields
-            existingProduct.setProductname(updatedProduct.getProductname());
-            existingProduct.setPrice(updatedProduct.getPrice());
-            existingProduct.setDescription(updatedProduct.getDescription());
-            existingProduct.setRatings(updatedProduct.getRatings());
-            existingProduct.setCategory(updatedProduct.getCategory());
-            existingProduct.setSeller(updatedProduct.getSeller());
-            existingProduct.setStock(updatedProduct.getStock());
-            existingProduct.setNumOfReviews(updatedProduct.getNumOfReviews());
 
-            // Handle product images update
+        // Handle images
+        List<ProductImages> images = new ArrayList<>();
+
+        // If the user cleared images
+        if (Boolean.TRUE.equals(updatedProduct.getImagesCleared())) {
             existingProduct.getProductImages().clear();
-            for (ProductImages image : updatedProduct.getProductImages()) {
-                image.setProduct(existingProduct);
-                existingProduct.getProductImages().add(image);
+        }else{
+          //  images.addAll(existingProduct.getProductImages());
+        }
+
+        // Add new images
+        if (files != null  && files.length > 0) {
+
+            //String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+            // Set base directory inside project root
+            String uploadDir = new File("uploads/product").getAbsolutePath();
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs(); // Ensure folder exists
             }
 
-             productrepository.save(existingProduct);
+            for (MultipartFile file : files) {
+                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename(); // prevent name collisions
+                File dest = new File(dir, fileName); // safer file creation
+                file.transferTo(dest); // save file to disk
+
+                String imageUrl = baseUrl + "/uploads/product/" + fileName;
+
+                ProductImages img = new ProductImages();
+                img.setImages(imageUrl);// or save the path if you're storing on disk
+                img.setProduct(existingProduct);
+                existingProduct.getProductImages().add(img);
+                images.add(img);
+            }
         }
-        return productrepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+       // existingProduct.getProductImages().clear(); // ✅ clear old
+        if (images != null && !images.isEmpty()) {
+            for (ProductImages img : images) {
+                img.setProduct(existingProduct);
+                existingProduct.getProductImages().add(img); // ✅ add new
+            }
+        }
+        // Update fields
+        existingProduct.setProductname(updatedProduct.getProductname());
+        existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setDescription(updatedProduct.getDescription());
+        existingProduct.setCategory(updatedProduct.getCategory());
+        existingProduct.setSeller(updatedProduct.getSeller());
+        existingProduct.setStock(updatedProduct.getStock());
+       // existingProduct.setProductImages(images);
+        Product savedProduct = productrepository.save(existingProduct);
+        return ResponseEntity.ok(Map.of("success", true, "product", savedProduct));
     }
+
 
     //Delete the product based on ID.
     // DEL http://localhost:8080/products/100
