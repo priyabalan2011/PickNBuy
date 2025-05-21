@@ -100,7 +100,7 @@ public class OrderController {
     }
 
     // Admin: Update order status
-    @PutMapping("/order/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable int id, @RequestBody Map<String, String> body) {
         Orders order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
@@ -126,7 +126,7 @@ public class OrderController {
     }
 
     // Admin: Delete order
-    @DeleteMapping("/order/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable int id) {
         Orders order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         orderRepository.delete(order);

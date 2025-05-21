@@ -26,7 +26,7 @@ const UpdateProduct = () => {
     const {loading, error, product, isProductUpdated} = useSelector(state=>state.productState);
     const categories=[
         'Electronics',
-        'Mobile Phones',
+        'MobilePhones',
         'Laptops',
         'Accessories',
         'Headphones',
@@ -70,7 +70,7 @@ const UpdateProduct = () => {
             formData.append('stock' , stock);
             formData.append('description' , description);
             formData.append('seller' , seller);
-            formData.append('category' , category.toUpperCase().trim());
+            formData.append('category' , category.toUpperCase());
             images.forEach (image => {
                 formData.append('files', image)
             })

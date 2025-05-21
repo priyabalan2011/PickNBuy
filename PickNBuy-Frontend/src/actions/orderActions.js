@@ -1,5 +1,5 @@
 import React from 'react'
-import { createOrderFail, createOrderRequest, createOrderSuccess, userOrdersSuccess, userOrdersRequest, userOrdersFail, orderDetailRequest, orderDetailSuccess, orderDetailFail } from '../slices/orderSlice'
+import { createOrderFail, createOrderRequest, createOrderSuccess, userOrdersSuccess, userOrdersRequest, userOrdersFail, orderDetailRequest, orderDetailSuccess, orderDetailFail, adminOrdersRequest, adminOrdersSuccess, adminOrdersFail, deleteOrderRequest, deleteOrderSuccess, deleteOrderFail, updateOrderRequest, updateOrderSuccess, updateOrderFail } from '../slices/orderSlice'
 import axios from 'axios';
 
 export const createOrder = (order) => async(dispatch) => {
@@ -55,6 +55,57 @@ export const orderDetail = id => async(dispatch) => {
 
     } catch (error) {
         dispatch(orderDetailFail(error.response.data.message));
+    }
+
+ 
+}
+
+export const adminOrders = () => async(dispatch) => {
+
+    try {
+        
+
+        dispatch(adminOrdersRequest()); 
+        const response = await axios.get(`http://localhost:8080/order/orders`);
+        dispatch(adminOrdersSuccess(response.data));
+
+
+    } catch (error) {
+        dispatch(adminOrdersFail(error.response.data.message));
+    }
+
+ 
+}
+
+export const deleteOrder = (id) => async(dispatch) => {
+
+    try {
+        
+
+        dispatch(deleteOrderRequest()); 
+        await axios.delete(`http://localhost:8080/order/${id}`);
+        dispatch(deleteOrderSuccess());
+
+
+    } catch (error) {
+        dispatch(deleteOrderFail(error.response.data.message));
+    }
+
+ 
+}
+
+export const updateOrder = (id,orderData) => async(dispatch) => {
+
+    try {
+        
+
+        dispatch(updateOrderRequest()); 
+        const {data} = await axios.put(`http://localhost:8080/order/${id}`,orderData);
+        dispatch(updateOrderSuccess(data));
+
+
+    } catch (error) {
+        dispatch(updateOrderFail(error.response.data.message));
     }
 
  

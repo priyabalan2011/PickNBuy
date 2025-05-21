@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export const OrderSuccess = () => {
   return (
@@ -8,7 +9,7 @@ export const OrderSuccess = () => {
 
         <h2>Your Order has been placed successfully.</h2>
 
-        <a href="/orders">Go to Orders</a>
+        <Link to="/orders">Go to Orders</Link>
     </div>
 
 </div>

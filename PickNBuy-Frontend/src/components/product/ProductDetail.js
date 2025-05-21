@@ -137,7 +137,13 @@ function ProductDetail() {
                             <button type="button"
                                 id="cart_btn"
                                 disabled={(product.stock == 0) ? true : false}
-                                onClick={() => dispatch(addCartItem(product.id, quantity))}
+                                onClick={() => {
+                                    dispatch(addCartItem(product.id, quantity))
+                                    Swal.fire({
+                                        icon: "success",
+                                        text: "Cart Item Added!"
+                                    });
+                                }}
                                 className="btn btn-primary d-inline ml-4">Add to Cart</button>
 
                             <hr />

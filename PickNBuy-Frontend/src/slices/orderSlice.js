@@ -7,7 +7,10 @@ const orderSlice = createSlice({
        orderDetail : {},
        userOrders :[],
        loading : false,
-       error: null
+       error: null,
+       adminOrders : [],
+       isOrderDeleted: false,
+       isOrderUpdated : false
     },
     reducers :{
        createOrderRequest(state, action){
@@ -90,6 +93,98 @@ const orderSlice = createSlice({
         }
 
        },
+       adminOrdersRequest(state, action){
+        return{
+            ...state,
+            loading : true
+        }
+
+       },
+
+       adminOrdersSuccess(state, action){
+        return{
+            ...state,
+            loading : false,
+            adminOrders : action.payload.orders
+        }
+
+       },
+       adminOrdersFail(state, action){
+        return{
+            ...state,
+            loading : false,
+            error : action.payload.error
+        }
+ 
+       },
+       deleteOrderRequest(state, action){
+        return{
+            ...state,
+            loading : true
+        }
+
+       },
+
+       deleteOrderSuccess(state, action){
+        return{
+            ...state,
+            loading : false,
+            isOrderDeleted : true
+        }
+
+       },
+       deleteOrderFail(state, action){
+        return{
+            ...state,
+            loading : false,
+            error : action.payload.error
+        }
+
+        
+       },
+       updateOrderRequest(state, action){
+        return{
+            ...state,
+            loading : true
+        }
+
+       },
+
+       updateOrderSuccess(state, action){
+        return{
+            ...state,
+            loading : false,
+            isOrderUpdated : true
+        }
+
+       },
+       updateOrderFail(state, action){
+        return{
+            ...state,
+            loading : false,
+            error : action.payload.error
+        }
+
+        
+       },
+       clearOrderDeleted(state,action){
+        return{
+            ...state,
+            isOrderDeleted: false
+        }
+       },
+       clearOrderUpdated(state,action){
+        return{
+            ...state,
+            isOrderUpdated: false
+        }
+       },
+       clearError(state, action) {
+        return {
+            ...state,
+            error: null
+        }
+    },
         
     }
 
@@ -107,7 +202,19 @@ export const {
     userOrdersSuccess,
     orderDetailFail,
     orderDetailRequest,
-    orderDetailSuccess
+    orderDetailSuccess,
+    adminOrdersFail,
+    adminOrdersRequest,
+    adminOrdersSuccess,
+    deleteOrderFail,
+    deleteOrderRequest,
+    deleteOrderSuccess,
+    clearOrderDeleted,
+    clearOrderUpdated,
+    updateOrderFail,
+    updateOrderRequest,
+    updateOrderSuccess,
+    clearError
 } = actions;
 
 export default reducer;
