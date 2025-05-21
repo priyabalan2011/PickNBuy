@@ -1,5 +1,6 @@
 import { loginRequest, loginSuccess, loginFail, clearError, registerRequest, registerSuccess, registerFail, loadUserRequest, loadUserFail, loadUserSuccess, logoutSuccess, logoutFail, updateProfileRequest, updateProfileFail, updateProfileSuccess, updatePasswordRequest, updatePasswordFail, updatePasswordSuccess, forgotPasswordRequest, forgotPasswordSuccess, forgotPasswordFail, resetPasswordRequest, resetPasswordSuccess, resetPasswordFail } from "../slices/authSlice"
 import axios from "axios";
+import { deleteUserFail, deleteUserRequest, deleteUserSuccess, updateUserFail, updateUserRequest, updateUserSuccess, userFail, userRequest, userSuccess, usersFail, usersRequest, usersSuccess } from "../slices/usersSlice";
 
 export const login = (email, password) => async (dispatch) => {
 
@@ -171,5 +172,77 @@ export const resetpassword = (newPassword,token) => async (dispatch) => {
         dispatch(resetPasswordSuccess(data));
       } catch (error) {
         dispatch(resetPasswordFail(error.response?.data || 'Something went wrong'));
+      }
+}
+
+
+export const getUsers = () => async (dispatch) => {
+
+   
+
+    try {
+        dispatch(usersRequest());
+        const response  = await axios.get(`http://localhost:8080/user/Allusers`);
+
+        if (response.data != null) {
+            dispatch(usersSuccess(response.data));
+        }
+        else {
+            dispatch(usersFail(response.data));
+        }
+
+    } catch (error) {
+        dispatch(usersFail(error.response.data.message));
+    }
+}
+
+export const getUser = ( id ) => async (dispatch) => {
+
+    try {
+        dispatch(userRequest());
+        const response = await axios.get(`http://localhost:8080/user/${id}`);
+
+        console.log(response.data)
+
+        if (response.data != null) {
+            dispatch(userSuccess(response.data));
+        }
+       
+
+    } catch (error) {
+        dispatch(userFail(error.response.data.message));
+    }
+}
+
+export const deleteUser = ( id ) => async (dispatch) => {
+
+    try {
+        dispatch(deleteUserRequest());
+        await axios.delete(`http://localhost:8080/user/${id}`);
+        dispatch(deleteUserSuccess());
+
+    } catch (error) {
+        dispatch(deleteUserFail(error.response.data.message));
+    }
+}
+
+export const updateUser = (id, formData) => async (dispatch) => {
+
+    try {
+        dispatch(updateUserRequest());
+    
+        const response = await axios.put(
+          `http://localhost:8080/user/${id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+    
+        dispatch(updateUserSuccess(response.data));
+      } catch (error) {
+        dispatch(updateUserFail(error.response?.data || 'Something went wrong'));
       }
 }

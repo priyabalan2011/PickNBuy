@@ -206,7 +206,7 @@ public class userController {
         return ResponseEntity.ok("Logout successful");
     }
 
-
+    //Admin: Get All Users
     @GetMapping("/Allusers")
     List<userModel> getAllusers()
     {
@@ -219,6 +219,7 @@ public class userController {
 //
 //    }
 
+//Admin: Get Specific User
     @GetMapping("/{id}")
     public ResponseEntity<LoginResponseDTO> getUserById(@PathVariable int id) {
         Optional<userModel> optionalUser = userRepository.findById(id);
@@ -254,6 +255,7 @@ public class userController {
         return  "Cloth with id "+id+" has been deleted success.";
     }
 
+    //Admin: Update User
     @PutMapping("/{id}")
     public userModel updateUser(@RequestBody userModel user, @PathVariable int id) {
         return userRepository.findById(id)

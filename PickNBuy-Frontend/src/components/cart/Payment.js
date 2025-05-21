@@ -92,7 +92,7 @@ function Payment() {
       }else{
         if((await result).paymentIntent.status === 'succeeded'){
           Swal.fire({
-            icon: "info",
+            icon: "success",
            // title:"Oops...",
             text: "Payment Success!"
         });
