@@ -1,6 +1,6 @@
 import axios from "axios";
 import { adminProductsFail, adminProductsRequest, adminProductsSuccess, productsFail, productsRequest, productsSuccess } from "../slices/productsSlices";
-import { createReviewFail, createReviewRequest, createReviewSuccess, deleteProductFail, deleteProductRequest, deleteProductSuccess, newProductFail, newProductRequest, newProductSuccess, updateProductFail, updateProductRequest, updateProductSuccess } from "../slices/productSlice";
+import { createReviewFail, createReviewRequest, createReviewSuccess, deleteProductFail, deleteProductRequest, deleteProductSuccess, deleteReviewFail, deleteReviewRequest, deleteReviewSuccess, newProductFail, newProductRequest, newProductSuccess, reviewsFail, reviewsRequest, reviewsSuccess, updateProductFail, updateProductRequest, updateProductSuccess } from "../slices/productSlice";
 
 export const getProducts = (currentPage, size, keyword ,  minPrice, maxPrice,category ,rating) => async (dispatch) =>{
     try {
@@ -162,3 +162,47 @@ export const updateProduct = (id,productData) => async (dispatch) =>{
         dispatch(updateProductFail(error.response.data.message));
     }
 }
+
+
+
+
+export const getReviews = (id) => async (dispatch) =>{
+    try {
+
+        dispatch(reviewsRequest());
+        let link = `http://localhost:8080/review/all?id=${id}`; 
+        const response  =  await axios.get(link);
+       
+         // Ensure response.data is not undefined
+         if (!response || !response.data) {
+             throw new Error("No data received from server");
+         }
+ 
+         console.log(response.data);
+ 
+         dispatch(reviewsSuccess(response.data));
+
+        
+    } catch (error) {
+        //handle error.
+        dispatch(reviewsFail(error.response.data.message));
+    }
+}
+
+
+export const deleteReviews = (productId, id) => async (dispatch) =>{
+    try {
+
+        dispatch(deleteReviewRequest());
+        let link = `http://localhost:8080/review/${id}`; 
+        await axios.delete(link, {params : {productId,id}});
+ 
+        dispatch(deleteReviewSuccess());
+
+        
+    } catch (error) {
+        //handle error.
+        dispatch(deleteReviewFail(error));
+    }
+}
+
